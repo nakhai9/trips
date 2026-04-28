@@ -12,17 +12,15 @@ type BaseModalStore = {
   component: React.ReactNode | null;
   config?: BaseModalConfig;
 
-  data: unknown | null;
+  params: unknown | null;
 
   open: (
     component: React.ReactNode,
     config?: BaseModalConfig,
     actions?: React.ReactNode,
   ) => void;
-
   close: () => void;
-
-  set: <T>(data: T) => void;
+  set: <T>(params: T) => void;
 };
 
 export const useBaseModalStore = create<BaseModalStore>((set) => ({
@@ -31,7 +29,7 @@ export const useBaseModalStore = create<BaseModalStore>((set) => ({
   config: undefined,
   actions: undefined,
 
-  data: null,
+  params: null,
 
   open: (component, config, actions) =>
     set({
@@ -47,5 +45,5 @@ export const useBaseModalStore = create<BaseModalStore>((set) => ({
       config: undefined,
     }),
 
-  set: (data) => set({ data }),
+  set: (params) => set({ params }),
 }));

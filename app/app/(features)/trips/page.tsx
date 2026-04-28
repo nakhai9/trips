@@ -9,40 +9,36 @@ import BaseInput from "@/libs/components/BaseInput";
 import { useBaseModalStore } from "@/libs/components/modal/BaseModalStore";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { useGlobalStore } from "@/store/global-store";
+import { ResponseId } from "@/types/api";
 import { Trip } from "@/types/common";
 import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { title } from "process";
 import { useCallback, useEffect, useState } from "react";
 
-type TripModalProps = {
-  trip: Partial<Trip>;
-  onFormChange?: (data: any) => void;
-};
+type TripModalProps = {};
 
-function TripModal({ trip }: TripModalProps) {
-  const { set } = useBaseModalStore();
+function TripModal({}: TripModalProps) {
+  const { set, params } = useBaseModalStore();
   return (
     <Stack spacing={3}>
       <BaseInput
         label="Tên hành trình"
-        value={title}
+        value={(params as unknown as Partial<Trip>)?.title || ""}
         size="small"
         onChange={(e) =>
           set<Partial<Trip>>({
+            ...(params as unknown as Partial<Trip>),
             title: e.target.value,
-            startDate: trip.startDate,
-            endDate: trip.endDate,
           })
         }
       />
 
       <TripsDateRangePicker
-        from={dayjs(trip.startDate)}
-        to={dayjs(trip.endDate)}
+        from={dayjs((params as unknown as Partial<Trip>).startDate)}
+        to={dayjs((params as unknown as Partial<Trip>).endDate)}
         onDateChange={({ from, to }) =>
           set({
-            title,
+            title: (params as unknown as Partial<Trip>).title,
             startDate: from?.toDate(),
             endDate: to?.toDate(),
           })
@@ -64,9 +60,9 @@ function useFetchTrips() {
       setIsLoading(true);
       setError(null);
 
-      const data = await HttpClient.get<any>(API_URLS.plan);
+      const params = await HttpClient.get<any>(API_URLS.plan);
 
-      setTrips(data);
+      setTrips(params);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -82,25 +78,30 @@ export default function TripPage() {
   const { trips, onLoadTrips } = useFetchTrips();
   const { showError, showSuccess } = useToast();
 
-  const { data, isOpen, open, set } = useBaseModalStore();
+  const { params, isOpen, open, set } = useBaseModalStore();
 
   const handleSave = async () => {
     try {
-      const value = data as unknown as Partial<Trip>;
-      if (!value.title) {
+      const modalParams = params as unknown as Partial<Trip>;
+      console.log(modalParams);
+      if (!modalParams.title) {
         showError("Bạn chưa đặt tên cho lịch trình");
         return;
       }
 
       const payload = {
-        title: title,
-        description: "tripData.description",
+        title: modalParams.title,
+        description: "tripparams.description",
         isPublic: true,
         accessCode: null,
-        startDate: dayjs(value.startDate).toISOString(),
-        endDate: dayjs(value.endDate).toISOString(),
+        startDate: dayjs(modalParams.startDate).toISOString(),
+        endDate: dayjs(modalParams.endDate).toISOString(),
       };
-      // const result = await HttpClient.post<ResponseId>(API_URLS.plan, );
+      console.log(payload);
+      const result = await HttpClient.post<ResponseId>(API_URLS.plan, payload);
+      if (result.id) {
+        onLoadTrips();
+      }
 
       showSuccess("Tạo hành trình thành công");
     } catch (error) {
@@ -110,21 +111,8 @@ export default function TripPage() {
   };
 
   useEffect(() => {
-    // onLoadTrips();
+    onLoadTrips();
   }, []);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    console.log("hello");
-    set({
-      title: "",
-      description: "",
-      startDate: dayjs().add(1, "day"),
-      endDate: dayjs().add(2, "day"),
-      accessCode: "",
-      isPrivate: false,
-    });
-  }, [isOpen]);
 
   return (
     <RootLayout>
@@ -158,8 +146,18 @@ export default function TripPage() {
                   "&:hover": { background: "#c94e2d" },
                 }}
                 onClick={() => {
-                  console.log(data);
-                  open(<TripModal trip={data as unknown as Partial<Trip>} />, {
+                  const initParams = {
+                    title: "",
+                    description: "",
+                    startDate: dayjs().add(1, "day"),
+                    endDate: dayjs().add(2, "day"),
+                    accessCode: "",
+                    isPrivate: false,
+                  };
+
+                  set(initParams);
+
+                  open(<TripModal />, {
                     title: "Chuyến đi mới",
                     actions: (
                       <>
