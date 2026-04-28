@@ -1,7 +1,10 @@
 "use client";
 import { LAYOUT_WIDTH_RESPONSIVE } from "@/app/providers";
-import BaseToast from "@/libs/components/BaseToast";
-import { useGlobalStore, useToast } from "@/store/global-store";
+import BaseModal from "@/libs/components/modal/BaseModal";
+import { useBaseModalStore } from "@/libs/components/modal/BaseModalStore";
+import BaseToast from "@/libs/components/toast/BaseToast";
+import { useToast } from "@/libs/components/toast/BaseToastStore";
+import { useGlobalStore } from "@/store/global-store";
 import {
   Backdrop,
   Box,
@@ -18,6 +21,8 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
   const { isLoading, loadingMessage, setIsLoading } = useGlobalStore();
   const { message, isShow, type, hideToast } = useToast();
+  const { isOpen, component, config, close } = useBaseModalStore();
+
   return (
     <Box
       sx={{
@@ -52,7 +57,19 @@ export default function RootLayout({ children }: RootLayoutProps) {
         type={type}
         onClose={hideToast}
       />
-      <Backdrop sx={{ zIndex: 9999 }} open={isLoading}>
+      {isOpen && component && (
+        <BaseModal
+          open={isOpen}
+          onClose={close}
+          title={config?.title}
+          maxWidth={config?.maxWidth || "sm"}
+          actions={config?.actions}
+        >
+          {component}
+        </BaseModal>
+      )}
+
+      <Backdrop sx={{ zIndex: 9999, background: "#fff" }} open={isLoading}>
         <Stack alignItems="center" spacing={2}>
           <CircularProgress color="warning" />
           {loadingMessage && (

@@ -7,10 +7,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import type { ReactNode } from "react";
 
-export const theme = createTheme({
-  spacing: 4,
-  shape: { borderRadius: 8 },
-});
+export const theme = createTheme({});
 
 export const LAYOUT_WIDTH_RESPONSIVE = {
   md: 768, // w-2xl in tailwindcss

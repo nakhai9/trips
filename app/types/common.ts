@@ -36,7 +36,7 @@ export type Location = {
 };
 
 //
-export type Plan = {
+export type Trip = {
   id?: string;
   title: string;
   startDate: Date;
