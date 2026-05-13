@@ -1,6 +1,5 @@
 "use client";
 import { LAYOUT_WIDTH_RESPONSIVE } from "@/app/providers";
-import BaseModal from "@/libs/components/modal/BaseModal";
 import { useBaseModalStore } from "@/libs/components/modal/BaseModalStore";
 import BaseToast from "@/libs/components/toast/BaseToast";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
@@ -42,7 +41,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             mx: "auto",
             width: "100%",
             px: {
-              xs: 4,
+              xs: 2,
               md: 0,
               lg: 0,
             },
@@ -57,7 +56,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         type={type}
         onClose={hideToast}
       />
-      {isOpen && component && (
+      {/* {isOpen && component && (
         <BaseModal
           open={isOpen}
           onClose={close}
@@ -67,7 +66,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         >
           {component}
         </BaseModal>
-      )}
+      )} */}
 
       <Backdrop sx={{ zIndex: 9999, background: "#fff" }} open={isLoading}>
         <Stack alignItems="center" spacing={2}>
@@ -75,7 +74,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           {loadingMessage && (
             <Typography
               sx={{
-                color: "common.white",
+                color: "#c94e2d",
                 px: 2,
                 textAlign: "center",
                 fontSize: { xs: "0.75rem", md: "0.875rem" },

@@ -7,7 +7,7 @@ export type TripsDateRangePickerEvent = {
   to: Dayjs | undefined;
   from: Dayjs | undefined;
 };
-type TripsDateRangePickerProps = {
+export type TripsDateRangePickerProps = {
   from: Dayjs | undefined;
   fromTitle?: string;
   to: Dayjs | undefined;
@@ -24,7 +24,7 @@ export default function TripsDateRangePicker({
   onDateChange,
 }: TripsDateRangePickerProps) {
   return (
-    <Stack flexDirection="row" alignItems="center" gap={2}>
+    <Stack direction="row" gap={2}>
       <DatePicker
         label={fromTitle}
         value={from ? dayjs(from) : null}

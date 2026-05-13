@@ -15,7 +15,7 @@ type TripCardProps = {
   startDate: Date;
   endDate?: Date;
 };
-export default function TripCard({
+export default function TripsCard({
   id,
   title,
   isPublic = true,
@@ -81,7 +81,7 @@ export default function TripCard({
         >
           <Box
             component="img"
-            src="/plan-2.jpg"
+            src="/trip-10.jpg"
             alt="Demo"
             sx={{
               height: "100%",
@@ -117,7 +117,7 @@ export default function TripCard({
             >
               {title}
             </Typography>
-            {!isPublic && <LockKeyhole size={16} />}
+            {!isPublic && <LockKeyhole size={16} color="red" />}
           </Box>
 
           <Typography sx={{ fontSize: 13, color: "#777" }}>
@@ -151,41 +151,6 @@ export default function TripCard({
           </IconButton>
         </Stack>
       </Box>
-      {/* <BaseModal
-        open={open}
-        onClose={() => setOpen(false)}
-        maxWidth="xs"
-        title="Chuyến đi mới"
-        actions={
-          <>
-            <Button type="button" onClick={() => setOpen(!open)}>
-              Hủy
-            </Button>
-            <Button
-              variant="contained"
-              size="small"
-              type="button"
-              sx={{
-                background: "#e35c35",
-                color: "#fff",
-                fontWeight: 500,
-                fontSize: 14,
-                px: 2,
-                py: 1,
-                borderRadius: 2,
-                textTransform: "none",
-                boxShadow: "0 2px 12px #e35c3530",
-                "&:hover": { background: "#c94e2d" },
-              }}
-              onClick={() => router.push("trips")}
-            >
-              Tạo mới
-            </Button>
-          </>
-        }
-      >
-       
-      </BaseModal> */}
     </>
   );
 }

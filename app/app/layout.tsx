@@ -29,10 +29,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        {/* <link
+        <link
           rel="stylesheet"
           href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css"
-        /> */}
+        />
       </head>
       <body className="flex flex-col min-h-full">
         <TripsProviders>{children}</TripsProviders>

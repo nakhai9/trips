@@ -60,20 +60,22 @@ export type ItineraryNotUse = {
 export type ItineraryActivity = {
   id?: string;
   description: string;
-  endTime?: Date;
-  startTime?: Date;
+  endTime?: string;
+  startTime?: string;
   sequence: number;
-  itineraryId: string;
+  itineraryId?: string;
   latitude?: number;
   longitude?: number;
   isCompleted?: boolean;
+  addressLine?: string | null;
 };
 
 export type Itinerary = {
-  dayNumber: number;
+  day: number;
   id?: string;
   location: Ref | null;
   planId: string;
+  destination?: string;
 
   activities?: ItineraryActivity[];
 } & ObjectId;
