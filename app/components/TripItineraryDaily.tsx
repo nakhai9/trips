@@ -23,7 +23,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { CircleX, MapPin, Plus, Trash2 } from "lucide-react";
+import { CircleX, MapPin, Plus, ReceiptText, Trash2 } from "lucide-react";
 import { useState } from "react";
 import TripLocationSearch from "./TripLocationSearch";
 import ActivityForm from "./forms/ActivityForm";
@@ -115,6 +115,20 @@ export default function TripItineraryDaily({
   const validate = (activity: ItineraryActivity) => {
     if (!activity.description) {
       showError("Thêm mô tả cho hoạt động");
+    }
+  };
+
+  const handleDeleteActivity = async (activity: ItineraryActivity) => {
+    try {
+      setIsLoading(true);
+      const deleted = await HttpClient.delete(
+        `${API_URLS.activities}/${activity.id}`,
+      );
+      afterSubmitActivityForm?.(true);
+    } catch (err: any) {
+      showError(err?.message || "Không thể thêm hoạt động");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -223,88 +237,17 @@ export default function TripItineraryDaily({
           }
         </Stack>
 
-        <Box sx={{ mt: 2, maxHeight: 400, overflowY: "scroll" }}>
+        <Box sx={{ mt: 2, maxHeight: 400, overflowY: "scroll", p: 0 }}>
           <Timeline
             sx={{
               [`& .${timelineOppositeContentClasses.root}`]: {
                 flex: 0.2,
               },
+              p: 0,
             }}
           >
             {itinerary.activities && itinerary.activities?.length > 0 ? (
               itinerary.activities?.map((act, index) => (
-                // <Box
-                //   key={act.id || index}
-                //   sx={{
-                //     display: "flex",
-                //     gap: 2,
-                //   }}
-                // >
-                //   <Box
-                //     sx={{
-                //       minWidth: "50px",
-                //       py: 1,
-                //       borderRadius: "14px",
-                //       color: "#444444",
-                //       fontWeight: 700,
-                //       fontSize: "14px",
-                //       height: "fit-content",
-                //     }}
-                //   >
-                //     {act.startTime || "-- : --"}
-                //   </Box>
-
-                //   <Box sx={{ flex: 1 }}>
-                //     <Typography
-                //       sx={{
-                //         mt: 1,
-                //         fontSize: "14px",
-                //         color: "#444444",
-                //         lineHeight: 1.6,
-                //       }}
-                //     >
-                //       {act.description}
-                //     </Typography>
-                //     {act.addressLine && (
-                //       <Stack
-                //         direction="row"
-                //         alignItems="center"
-                //         sx={{
-                //           display: "none",
-                //         }}
-                //       >
-                //         <Stack direction="row" alignItems="center" spacing={0.5}>
-                //           <MapPin size={12} />
-                //           <Typography
-                //             component="span"
-                //             sx={{
-                //               fontSize: 12,
-                //             }}
-                //           >
-                //             {act.addressLine}
-                //           </Typography>
-                //         </Stack>
-                //       </Stack>
-                //     )}
-                //   </Box>
-                //   <Stack justifyItems="flex-end">
-                //     <Box>
-                //       <Tooltip title="Xóa lịch trình">
-                //         <IconButton
-                //           size="small"
-                //           onClick={handleDeleteSchedule}
-                //           sx={{
-                //             bgcolor: "rgba(211,47,47,0.08)",
-                //             "&:hover": { bgcolor: "rgba(211,47,47,0.16)" },
-                //           }}
-                //         >
-                //           <Minus size={14} />
-                //         </IconButton>
-                //       </Tooltip>
-                //     </Box>
-                //   </Stack>
-                // </Box>
-
                 <TimelineItem key={act.id || index}>
                   <TimelineOppositeContent
                     sx={{
@@ -322,7 +265,30 @@ export default function TripItineraryDaily({
                       sx={{ bgcolor: act.isCompleted ? "#e35c35" : "" }}
                     />
                   </TimelineSeparator>
-                  <TimelineContent>{act.description}</TimelineContent>
+                  <TimelineContent>
+                    <Stack direction="row" justifyContent="space-between">
+                      <Box>{act.description}</Box>
+                      <Box>
+                        <Stack direction="row" justifyContent="space-between">
+                          <IconButton size="small" type="button" sx={{}}>
+                            <ReceiptText size={16} />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            type="button"
+                            sx={{
+                              color: "#d32f2f",
+                              bgcolor: "rgba(211,47,47,0.08)",
+                              "&:hover": { bgcolor: "rgba(211,47,47,0.16)" },
+                            }}
+                            onClick={() => handleDeleteActivity(act)}
+                          >
+                            <Trash2 size={16} />
+                          </IconButton>
+                        </Stack>
+                      </Box>
+                    </Stack>
+                  </TimelineContent>
                 </TimelineItem>
               ))
             ) : (
