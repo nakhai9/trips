@@ -310,7 +310,7 @@ export default function TripPage() {
                   }}
                 />
               }
-              label="Công khai"
+              label="Riêng tư"
             />
 
             <BaseInput

@@ -71,7 +71,7 @@ export type ItineraryActivity = {
 };
 
 export type Itinerary = {
-  day: number;
+  dayNumber: number;
   id?: string;
   location: Ref | null;
   planId: string;

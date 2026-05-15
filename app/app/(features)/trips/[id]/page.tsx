@@ -4,8 +4,9 @@ import RootLayout from "@/components/layout/RootLayout";
 import TripItineraryDaily from "@/components/TripItineraryDaily";
 import { API_URLS } from "@/libs/api/api.constant";
 import { HttpClient } from "@/libs/api/http";
-import { SCHEDULE } from "@/libs/constants";
+import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { useGlobalStore } from "@/store/global-store";
+import { ResponseId } from "@/types/api";
 import { Itinerary, Trip } from "@/types/common";
 import {
   Box,
@@ -68,10 +69,10 @@ function useFetchItineraries() {
     try {
       setLoading(true);
       setIsLoading(true);
-      // const res = await HttpClient.get<any>(
-      //   `${API_URLS.itineraries}?planId=${tripID}`,
-      // );
-      setItineraries(SCHEDULE);
+      const res = await HttpClient.get<any>(
+        `${API_URLS.itineraries}?planId=${tripID}`,
+      );
+      setItineraries(res);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -94,6 +95,8 @@ export default function TripDetailPage() {
     fetchItineraries,
     setItineraries,
   } = useFetchItineraries();
+  const { showError, showSuccess } = useToast();
+  const { setIsLoading } = useGlobalStore();
 
   const [currentDay, setCurrentDay] = useState<number>(1);
 
@@ -108,7 +111,7 @@ export default function TripDetailPage() {
   }, [tripID]);
 
   const selectedItinerary = useMemo(() => {
-    return itineraries.find((x) => x.day === currentDay) || null;
+    return itineraries.find((x) => x.dayNumber === currentDay) || null;
   }, [currentDay, itineraries]);
 
   // ================= LOADING =================
@@ -123,6 +126,49 @@ export default function TripDetailPage() {
   }
 
   const validate = () => {};
+
+  const handleAutoSave = async (itinerary: Itinerary) => {
+    setIsLoading(true);
+    try {
+      console.log(itinerary);
+
+      const { location, activities, ...rest } = itinerary;
+
+      if (itinerary.id) {
+        const data = await HttpClient.put<ResponseId>(
+          `${API_URLS.itineraries}/${itinerary.id}`,
+          {
+            ...rest,
+          },
+        );
+      } else {
+        const data = await HttpClient.post<ResponseId>(API_URLS.itineraries, {
+          ...rest,
+        });
+      }
+
+      await fetchItineraries(tripID);
+      showSuccess("Lưu thành công");
+    } catch (error) {
+      showError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAutoDelete = async (event: Itinerary) => {
+    try {
+      const data = await HttpClient.delete<ResponseId>(
+        `${API_URLS.itineraries}/${event.id}`,
+      );
+      if (data) {
+        showSuccess("Đã xóa thành công");
+        await fetchItineraries(tripID);
+      }
+    } catch (error) {
+      showError(error);
+    }
+  };
 
   return (
     <>
@@ -175,7 +221,7 @@ export default function TripDetailPage() {
                   </Stack>
                 </Box>
 
-                <Box
+                {/* <Box
                   component="div"
                   sx={{
                     width: "100%",
@@ -184,7 +230,7 @@ export default function TripDetailPage() {
                   }}
                 >
                   <TripOpenStreetMapView />
-                </Box>
+                </Box> */}
               </Paper>
 
               <Grid container spacing={4}>
@@ -244,28 +290,8 @@ export default function TripDetailPage() {
                     {selectedItinerary && (
                       <TripItineraryDaily
                         itinerary={selectedItinerary}
-                        onChange={(event) => {
-                          setItineraries((prev) => {
-                            const exists = prev.some(
-                              (item) => item.day === event.day,
-                            );
-
-                            if (exists) {
-                              return prev.map((item) =>
-                                item.day === event.day ? event : item,
-                              );
-                            }
-
-                            return [...prev, event];
-                          });
-                        }}
-                        onDelete={(event) => {
-                          setItineraries((prev) => {
-                            return prev.filter(
-                              (item) => item.day !== event.day,
-                            );
-                          });
-                        }}
+                        onChange={(event) => handleAutoSave(event)}
+                        onDelete={(event) => handleAutoDelete(event)}
                       />
                     )}
 
@@ -318,10 +344,10 @@ export default function TripDetailPage() {
                                 setItineraries((prev) => [
                                   ...prev,
                                   {
-                                    day: currentDay,
+                                    dayNumber: currentDay,
                                     destination: "",
                                     location: null,
-                                    planId: "",
+                                    planId: tripID,
                                     activities: [],
                                   },
                                 ]);

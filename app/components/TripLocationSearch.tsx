@@ -90,7 +90,14 @@ export default function TripLocationSearch({
       selected = newValue;
     } else if (typeof newValue === "string" && newValue.trim()) {
       // Tùy chọn: cho phép tạo tạm nếu muốn hỗ trợ free solo
-      selected = { label: newValue.trim(), value: newValue.trim() };
+      selected = {
+        label: newValue.trim(),
+        value: newValue.trim(),
+        coordinates: {
+          lat: 0,
+          lng: 0,
+        },
+      };
     }
 
     setValue(selected);

@@ -20,7 +20,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { MapPin, Plus, Trash2 } from "lucide-react";
+import { CircleX, MapPin, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import TripLocationSearch from "./TripLocationSearch";
 import ActivityForm from "./forms/ActivityForm";
@@ -106,7 +106,7 @@ export default function TripItineraryDaily({
       <Paper
         elevation={2}
         sx={{
-          p: 1.5,
+          p: 1,
           bgcolor: "#fff",
           height: "100%",
           width: "100%",
@@ -176,19 +176,32 @@ export default function TripItineraryDaily({
                 </Tooltip>
               )}
 
-              <Tooltip title="Xóa lịch trình">
-                <IconButton
-                  size="small"
-                  onClick={handleDeleteSchedule}
-                  sx={{
-                    color: "#d32f2f",
-                    bgcolor: "rgba(211,47,47,0.08)",
-                    "&:hover": { bgcolor: "rgba(211,47,47,0.16)" },
-                  }}
-                >
-                  <Trash2 size={18} />
-                </IconButton>
-              </Tooltip>
+              {!isEditingDestination && (
+                <Tooltip title="Xóa lịch trình">
+                  <IconButton
+                    size="small"
+                    onClick={handleDeleteSchedule}
+                    sx={{
+                      color: "#d32f2f",
+                      bgcolor: "rgba(211,47,47,0.08)",
+                      "&:hover": { bgcolor: "rgba(211,47,47,0.16)" },
+                    }}
+                  >
+                    <Trash2 size={18} />
+                  </IconButton>
+                </Tooltip>
+              )}
+
+              {isEditingDestination && (
+                <Tooltip title="Lưu">
+                  <IconButton
+                    size="small"
+                    onClick={() => setIsEditingDestination(false)}
+                  >
+                    <CircleX size={18} />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Stack>
           }
         </Stack>
@@ -309,36 +322,6 @@ export default function TripItineraryDaily({
                   borderRadius: 2,
                 }}
               >
-                <Box
-                  role="button"
-                  tabIndex={0}
-                  sx={{
-                    width: 72,
-                    height: 72,
-                    borderRadius: 3,
-                    bgcolor: "#fff",
-                    boxShadow: "0 4px 16px rgba(15, 23, 42, 0.08)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    outline: "none",
-                  }}
-                >
-                  <Plus size={28} strokeWidth={2.25} color="#1f2937" />
-                </Box>
-
-                <Typography
-                  variant="subtitle1"
-                  sx={{
-                    fontWeight: 700,
-                    color: "#1f2937",
-                    mt: 1,
-                  }}
-                >
-                  Chưa có hoạt động
-                </Typography>
-
                 <Typography
                   variant="body2"
                   sx={{
