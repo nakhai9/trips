@@ -1,4 +1,6 @@
 "use client";
+import { API_URLS } from "@/libs/api/api.constant";
+import { HttpClient } from "@/libs/api/http";
 import BaseModal from "@/libs/components/modal/BaseModal";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { Itinerary, ItineraryActivity } from "@/types/common";
@@ -74,21 +76,29 @@ export default function TripItineraryDaily({
     setActivityForm(form);
   };
 
-  const handleActivityFormSubmit = () => {
+  const handleActivityFormSubmit = async () => {
     const newActivity: ItineraryActivity = {
       ...activityForm,
       sequence: (itinerary.activities?.length ?? 0) + 1,
+      itineraryId: itinerary.id,
     } as ItineraryActivity;
 
     validate(newActivity);
 
-    const updated: Itinerary = {
-      ...itinerary,
-      activities: [...(itinerary.activities ?? []), newActivity],
-    };
-    onChange?.(updated);
-    onAddActivity?.(updated);
-    setActivityModalOpen(false);
+    try {
+      // Gọi API tạo hoạt động mới
+      const created = await HttpClient.post<ItineraryActivity>(
+        API_URLS.activities,
+        newActivity,
+      );
+      const updated: Itinerary = {
+        ...itinerary,
+        activities: [...(itinerary.activities ?? []), created],
+      };
+      setActivityModalOpen(false);
+    } catch (err: any) {
+      showError(err?.message || "Không thể thêm hoạt động");
+    }
   };
 
   const handleDeleteSchedule = () => {
