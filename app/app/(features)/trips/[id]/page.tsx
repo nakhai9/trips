@@ -292,6 +292,11 @@ export default function TripDetailPage() {
                         itinerary={selectedItinerary}
                         onChange={(event) => handleAutoSave(event)}
                         onDelete={(event) => handleAutoDelete(event)}
+                        afterSubmitActivityForm={async (response) => {
+                          if (response) {
+                            await fetchItineraries(tripID);
+                          }
+                        }}
                       />
                     )}
 

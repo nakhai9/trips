@@ -3,6 +3,7 @@ import { API_URLS } from "@/libs/api/api.constant";
 import { HttpClient } from "@/libs/api/http";
 import BaseModal from "@/libs/components/modal/BaseModal";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
+import { useGlobalStore } from "@/store/global-store";
 import { Itinerary, ItineraryActivity } from "@/types/common";
 import Timeline from "@mui/lab/Timeline";
 import TimelineConnector from "@mui/lab/TimelineConnector";
@@ -33,6 +34,7 @@ type TripItineraryDailyProps = {
   onChange?: (itinerary: Itinerary) => void;
   onAddActivity?: (itinerary: Itinerary) => void;
   onDelete?: (itinerary: Itinerary) => void;
+  afterSubmitActivityForm?: (response: boolean) => void;
 };
 
 export default function TripItineraryDaily({
@@ -40,8 +42,10 @@ export default function TripItineraryDaily({
   onChange,
   onAddActivity,
   onDelete,
+  afterSubmitActivityForm,
 }: TripItineraryDailyProps) {
   const { showError } = useToast();
+  const { setIsLoading } = useGlobalStore();
   const [isEditingDestination, setIsEditingDestination] = useState(false);
   const [activityModalOpen, setActivityModalOpen] = useState(false);
   const [activityForm, setActivityForm] = useState<Partial<ItineraryActivity>>(
@@ -86,7 +90,7 @@ export default function TripItineraryDaily({
     validate(newActivity);
 
     try {
-      // Gọi API tạo hoạt động mới
+      setIsLoading(true);
       const created = await HttpClient.post<ItineraryActivity>(
         API_URLS.activities,
         newActivity,
@@ -96,8 +100,11 @@ export default function TripItineraryDaily({
         activities: [...(itinerary.activities ?? []), created],
       };
       setActivityModalOpen(false);
+      afterSubmitActivityForm?.(true);
     } catch (err: any) {
       showError(err?.message || "Không thể thêm hoạt động");
+    } finally {
+      setIsLoading(false);
     }
   };
 
