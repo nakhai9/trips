@@ -21,7 +21,6 @@ import {
   Box,
   Button,
   IconButton,
-  Paper,
   Stack,
   Tooltip,
   Typography,
@@ -179,8 +178,7 @@ export default function TripItineraryDaily({
 
   return (
     <>
-      <Paper
-        elevation={2}
+      <Box
         sx={{
           p: 1,
           bgcolor: "#fff",
@@ -241,18 +239,23 @@ export default function TripItineraryDaily({
           <Stack direction="row" spacing={1} alignItems="center">
             {itinerary.destination && !isEditingDestination && (
               <Tooltip title="Thêm hoạt động">
-                <IconButton
+                <Button
                   size="small"
                   onClick={handleAddActivity}
                   sx={{
-                    bgcolor: "rgba(0,0,0,0.04)",
-                    "&:hover": {
-                      bgcolor: "rgba(0,0,0,0.08)",
-                    },
+                    background: "#e35c35",
+                    color: "#fff",
+                    fontWeight: 500,
+
+                    borderRadius: 2,
+                    textTransform: "none",
+                    boxShadow: "0 2px 12px #e35c3530",
+                    "&:hover": { background: "#c94e2d" },
                   }}
+                  startIcon={<Plus size={18} />}
                 >
-                  <Plus size={18} />
-                </IconButton>
+                  <span>Thêm hoạt động</span>
+                </Button>
               </Tooltip>
             )}
 
@@ -394,7 +397,7 @@ export default function TripItineraryDaily({
             )}
           </Timeline>
         </Box>
-      </Paper>
+      </Box>
 
       <BaseModal
         open={activityModalOpen}

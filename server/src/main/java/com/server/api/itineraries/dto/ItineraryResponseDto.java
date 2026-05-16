@@ -23,4 +23,5 @@ public class ItineraryResponseDto {
     private UUID planId;
     private String destination;
     List<ActivityResponseDto> activities;
+    private Boolean isCompleted;
 }

@@ -68,6 +68,8 @@ export default function ActivityForm({
           onChange={(e) => handleChange("description", e.target.value)}
           fullWidth
           size="small"
+          multiline
+          rows={4}
         />
         <TripsTimeRangePicker
           from={initial?.startTime ? initial.startTime : undefined}
