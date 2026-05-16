@@ -1,10 +1,12 @@
 "use client";
+
 import { API_URLS } from "@/libs/api/api.constant";
 import { HttpClient } from "@/libs/api/http";
 import BaseModal from "@/libs/components/modal/BaseModal";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { useGlobalStore } from "@/store/global-store";
 import { Itinerary, ItineraryActivity } from "@/types/common";
+
 import Timeline from "@mui/lab/Timeline";
 import TimelineConnector from "@mui/lab/TimelineConnector";
 import TimelineContent from "@mui/lab/TimelineContent";
@@ -14,6 +16,7 @@ import TimelineOppositeContent, {
   timelineOppositeContentClasses,
 } from "@mui/lab/TimelineOppositeContent";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
+
 import {
   Box,
   Button,
@@ -23,8 +26,11 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+
 import { CircleX, MapPin, Plus, ReceiptText, Trash2 } from "lucide-react";
+
 import { useState } from "react";
+
 import TripLocationSearch from "./TripLocationSearch";
 import ActivityForm from "./forms/ActivityForm";
 
@@ -40,20 +46,27 @@ type TripItineraryDailyProps = {
 export default function TripItineraryDaily({
   itinerary,
   onChange,
-  onAddActivity,
   onDelete,
   afterSubmitActivityForm,
 }: TripItineraryDailyProps) {
   const { showError } = useToast();
   const { setIsLoading } = useGlobalStore();
+
   const [isEditingDestination, setIsEditingDestination] = useState(false);
+
   const [activityModalOpen, setActivityModalOpen] = useState(false);
+
+  const [editingActivity, setEditingActivity] =
+    useState<ItineraryActivity | null>(null);
+
   const [activityForm, setActivityForm] = useState<Partial<ItineraryActivity>>(
     {},
   );
 
   const hasActivities = (itinerary.activities?.length ?? 0) > 0;
+
   const canEditDestination = !hasActivities;
+
   const showSearch =
     !itinerary.destination || (isEditingDestination && canEditDestination);
 
@@ -62,10 +75,13 @@ export default function TripItineraryDaily({
       ...itinerary,
       destination: value?.label ?? "",
     });
+
     setIsEditingDestination(false);
   };
 
   const handleAddActivity = () => {
+    setEditingActivity(null);
+
     setActivityForm({
       description: "",
       startTime: "",
@@ -73,6 +89,17 @@ export default function TripItineraryDaily({
       addressLine: "",
       isCompleted: false,
     });
+
+    setActivityModalOpen(true);
+  };
+
+  const handleEditActivity = (activity: ItineraryActivity) => {
+    setEditingActivity(activity);
+
+    setActivityForm({
+      ...activity,
+    });
+
     setActivityModalOpen(true);
   };
 
@@ -80,29 +107,53 @@ export default function TripItineraryDaily({
     setActivityForm(form);
   };
 
+  const validate = (activity: ItineraryActivity) => {
+    if (!activity.description) {
+      throw new Error("Thêm mô tả cho hoạt động");
+    }
+  };
+
   const handleActivityFormSubmit = async () => {
-    const newActivity: ItineraryActivity = {
-      ...activityForm,
-      sequence: (itinerary.activities?.length ?? 0) + 1,
-      itineraryId: itinerary.id,
-    } as ItineraryActivity;
-
-    validate(newActivity);
-
     try {
       setIsLoading(true);
-      const created = await HttpClient.post<ItineraryActivity>(
-        API_URLS.activities,
-        newActivity,
-      );
-      const updated: Itinerary = {
-        ...itinerary,
-        activities: [...(itinerary.activities ?? []), created],
-      };
+
+      // UPDATE
+      if (editingActivity?.id) {
+        const updatedActivity: ItineraryActivity = {
+          ...editingActivity,
+          ...activityForm,
+        };
+
+        validate(updatedActivity);
+
+        await HttpClient.put(
+          `${API_URLS.activities}/${editingActivity.id}`,
+          updatedActivity,
+        );
+      }
+
+      // CREATE
+      else {
+        const newActivity: ItineraryActivity = {
+          ...activityForm,
+          sequence: (itinerary.activities?.length ?? 0) + 1,
+          itineraryId: itinerary.id,
+        } as ItineraryActivity;
+
+        validate(newActivity);
+
+        await HttpClient.post<ItineraryActivity>(
+          API_URLS.activities,
+          newActivity,
+        );
+      }
+
       setActivityModalOpen(false);
+      setEditingActivity(null);
+
       afterSubmitActivityForm?.(true);
     } catch (err: any) {
-      showError(err?.message || "Không thể thêm hoạt động");
+      showError(err?.message || "Không thể lưu hoạt động");
     } finally {
       setIsLoading(false);
     }
@@ -112,21 +163,15 @@ export default function TripItineraryDaily({
     onDelete?.(itinerary);
   };
 
-  const validate = (activity: ItineraryActivity) => {
-    if (!activity.description) {
-      showError("Thêm mô tả cho hoạt động");
-    }
-  };
-
   const handleDeleteActivity = async (activity: ItineraryActivity) => {
     try {
       setIsLoading(true);
-      const deleted = await HttpClient.delete(
-        `${API_URLS.activities}/${activity.id}`,
-      );
+
+      await HttpClient.delete(`${API_URLS.activities}/${activity.id}`);
+
       afterSubmitActivityForm?.(true);
     } catch (err: any) {
-      showError(err?.message || "Không thể thêm hoạt động");
+      showError(err?.message || "Không thể xóa hoạt động");
     } finally {
       setIsLoading(false);
     }
@@ -171,11 +216,14 @@ export default function TripItineraryDaily({
                 px: 0.5,
                 py: 0.25,
                 ...(canEditDestination && {
-                  "&:hover": { bgcolor: "rgba(0,0,0,0.04)" },
+                  "&:hover": {
+                    bgcolor: "rgba(0,0,0,0.04)",
+                  },
                 }),
               }}
             >
               <MapPin />
+
               <Typography
                 component="span"
                 variant="subtitle1"
@@ -190,54 +238,63 @@ export default function TripItineraryDaily({
             </Stack>
           )}
 
-          {
-            <Stack direction="row" spacing={1} alignItems="center">
-              {itinerary.destination && !isEditingDestination && (
-                <Tooltip title="Thêm hoạt động">
-                  <IconButton
-                    size="small"
-                    onClick={handleAddActivity}
-                    sx={{
-                      bgcolor: "rgba(0,0,0,0.04)",
-                      "&:hover": { bgcolor: "rgba(0,0,0,0.08)" },
-                    }}
-                  >
-                    <Plus size={18} />
-                  </IconButton>
-                </Tooltip>
-              )}
+          <Stack direction="row" spacing={1} alignItems="center">
+            {itinerary.destination && !isEditingDestination && (
+              <Tooltip title="Thêm hoạt động">
+                <IconButton
+                  size="small"
+                  onClick={handleAddActivity}
+                  sx={{
+                    bgcolor: "rgba(0,0,0,0.04)",
+                    "&:hover": {
+                      bgcolor: "rgba(0,0,0,0.08)",
+                    },
+                  }}
+                >
+                  <Plus size={18} />
+                </IconButton>
+              </Tooltip>
+            )}
 
-              {!isEditingDestination && (
-                <Tooltip title="Xóa lịch trình">
-                  <IconButton
-                    size="small"
-                    onClick={handleDeleteSchedule}
-                    sx={{
-                      color: "#d32f2f",
-                      bgcolor: "rgba(211,47,47,0.08)",
-                      "&:hover": { bgcolor: "rgba(211,47,47,0.16)" },
-                    }}
-                  >
-                    <Trash2 size={18} />
-                  </IconButton>
-                </Tooltip>
-              )}
+            {!isEditingDestination && (
+              <Tooltip title="Xóa lịch trình">
+                <IconButton
+                  size="small"
+                  onClick={handleDeleteSchedule}
+                  sx={{
+                    color: "#d32f2f",
+                    bgcolor: "rgba(211,47,47,0.08)",
+                    "&:hover": {
+                      bgcolor: "rgba(211,47,47,0.16)",
+                    },
+                  }}
+                >
+                  <Trash2 size={18} />
+                </IconButton>
+              </Tooltip>
+            )}
 
-              {isEditingDestination && (
-                <Tooltip title="Lưu">
-                  <IconButton
-                    size="small"
-                    onClick={() => setIsEditingDestination(false)}
-                  >
-                    <CircleX size={18} />
-                  </IconButton>
-                </Tooltip>
-              )}
-            </Stack>
-          }
+            {isEditingDestination && (
+              <Tooltip title="Đóng">
+                <IconButton
+                  size="small"
+                  onClick={() => setIsEditingDestination(false)}
+                >
+                  <CircleX size={18} />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Stack>
         </Stack>
 
-        <Box sx={{ mt: 2, maxHeight: 400, overflowY: "scroll", p: 0 }}>
+        <Box
+          sx={{
+            mt: 2,
+            maxHeight: 400,
+            overflowY: "scroll",
+            p: 0,
+          }}
+        >
           <Timeline
             sx={{
               [`& .${timelineOppositeContentClasses.root}`]: {
@@ -246,8 +303,8 @@ export default function TripItineraryDaily({
               p: 0,
             }}
           >
-            {itinerary.activities && itinerary.activities?.length > 0 ? (
-              itinerary.activities?.map((act, index) => (
+            {itinerary.activities && itinerary.activities.length > 0 ? (
+              itinerary.activities.map((act, index) => (
                 <TimelineItem key={act.id || index}>
                   <TimelineOppositeContent
                     sx={{
@@ -255,38 +312,55 @@ export default function TripItineraryDaily({
                       maxWidth: "80px",
                     }}
                   >
-                    {act.startTime}
+                    {act.startTime ? act.startTime : "--:--"}
                   </TimelineOppositeContent>
+
                   <TimelineSeparator>
                     <TimelineDot
-                      sx={{ bgcolor: act.isCompleted ? "#e35c35" : "" }}
+                      sx={{
+                        bgcolor: act.isCompleted ? "#e35c35" : "",
+                      }}
                     />
+
                     <TimelineConnector
-                      sx={{ bgcolor: act.isCompleted ? "#e35c35" : "" }}
+                      sx={{
+                        bgcolor: act.isCompleted ? "#e35c35" : "",
+                      }}
                     />
                   </TimelineSeparator>
+
                   <TimelineContent>
-                    <Stack direction="row" justifyContent="space-between">
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
                       <Box>{act.description}</Box>
-                      <Box>
-                        <Stack direction="row" justifyContent="space-between">
-                          <IconButton size="small" type="button" sx={{}}>
-                            <ReceiptText size={16} />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            type="button"
-                            sx={{
-                              color: "#d32f2f",
-                              bgcolor: "rgba(211,47,47,0.08)",
-                              "&:hover": { bgcolor: "rgba(211,47,47,0.16)" },
-                            }}
-                            onClick={() => handleDeleteActivity(act)}
-                          >
-                            <Trash2 size={16} />
-                          </IconButton>
-                        </Stack>
-                      </Box>
+
+                      <Stack direction="row" spacing={1}>
+                        <IconButton
+                          size="small"
+                          type="button"
+                          onClick={() => handleEditActivity(act)}
+                        >
+                          <ReceiptText size={16} />
+                        </IconButton>
+
+                        <IconButton
+                          size="small"
+                          type="button"
+                          sx={{
+                            color: "#d32f2f",
+                            bgcolor: "rgba(211,47,47,0.08)",
+                            "&:hover": {
+                              bgcolor: "rgba(211,47,47,0.16)",
+                            },
+                          }}
+                          onClick={() => handleDeleteActivity(act)}
+                        >
+                          <Trash2 size={16} />
+                        </IconButton>
+                      </Stack>
                     </Stack>
                   </TimelineContent>
                 </TimelineItem>
@@ -321,13 +395,25 @@ export default function TripItineraryDaily({
           </Timeline>
         </Box>
       </Paper>
+
       <BaseModal
         open={activityModalOpen}
-        onClose={() => setActivityModalOpen(false)}
-        title="Thêm hoạt động mới"
+        onClose={() => {
+          setActivityModalOpen(false);
+          setEditingActivity(null);
+        }}
+        title={editingActivity ? "Chỉnh sửa hoạt động" : "Thêm hoạt động mới"}
         actions={
           <>
-            <Button onClick={() => setActivityModalOpen(false)}>Hủy</Button>
+            <Button
+              onClick={() => {
+                setActivityModalOpen(false);
+                setEditingActivity(null);
+              }}
+            >
+              Hủy
+            </Button>
+
             <Button
               variant="contained"
               onClick={handleActivityFormSubmit}
@@ -342,10 +428,12 @@ export default function TripItineraryDaily({
                 borderRadius: 2,
                 textTransform: "none",
                 boxShadow: "0 2px 12px #e35c3530",
-                "&:hover": { background: "#c94e2d" },
+                "&:hover": {
+                  background: "#c94e2d",
+                },
               }}
             >
-              Thêm
+              {editingActivity ? "Cập nhật" : "Thêm"}
             </Button>
           </>
         }

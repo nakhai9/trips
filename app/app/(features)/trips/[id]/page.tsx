@@ -29,6 +29,7 @@ import {
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { PositionItem } from "../../../../components/TripOpenStreetMapView";
 const TripOpenStreetMapView = dynamic(
   () => import("../../../../components/TripOpenStreetMapView"),
   {
@@ -221,7 +222,7 @@ export default function TripDetailPage() {
                   </Stack>
                 </Box>
 
-                {/* <Box
+                <Box
                   component="div"
                   sx={{
                     width: "100%",
@@ -229,8 +230,23 @@ export default function TripDetailPage() {
                     objectFit: "cover",
                   }}
                 >
-                  <TripOpenStreetMapView />
-                </Box> */}
+                  <TripOpenStreetMapView
+                    zoom={13}
+                    positions={selectedItinerary?.activities?.map((x) => {
+                      return {
+                        latitude: x.latitude,
+                        longitude: x.longitude,
+                        label: x.addressLine?.split("-")[0],
+                      } as PositionItem;
+                    })}
+                  />
+                </Box>
+                <Typography
+                  variant="body2"
+                  sx={{ p: 1, fontSize: 12, fontStyle: "italic" }}
+                >
+                  Bản đồ các điểm tham quan
+                </Typography>
               </Paper>
 
               <Grid container spacing={4}>

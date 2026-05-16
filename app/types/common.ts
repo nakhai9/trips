@@ -64,10 +64,10 @@ export type ItineraryActivity = {
   startTime?: string;
   sequence: number;
   itineraryId?: string;
-  latitude?: number;
-  longitude?: number;
   isCompleted?: boolean;
   addressLine?: string | null;
+  latitude?: number;
+  longitude?: number;
 };
 
 export type Itinerary = {

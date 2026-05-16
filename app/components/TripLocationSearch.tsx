@@ -46,25 +46,21 @@ export default function TripLocationSearch({
     try {
       const locationIqToken = "pk.af2a987e6b93d62a1f8753f10be2e48d";
       const searchText = `${searchTerm.trim()}`;
-      // const response = await fetch(
-      //   `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(
-      //     query,
-      //   )}&apiKey=ed624b0b709f4d47a6648b2c9dd7cb63&lang=vi&limit=8&filter=countrycode:vn&bias=countrycode:vn&type=city`,
-      // );
-
-      const query = `https://api.locationiq.com/v1/autocomplete?key=${locationIqToken}&q=${searchText}&limit=5&dedupe=1`;
-      // const query = `https://api.locationiq.com/v1/autocomplete?key=${locationIqToken}&q=h%E1%BB%99i%20an&limit=5&dedupe=1&`;
+      const query = `https://api.locationiq.com/v1/autocomplete?key=${locationIqToken}&q=${searchText}&limit=10&dedupe=1&countrycodes=vn&normalizecity=1`;
       const response = await fetch(query);
       const data = await response.json();
 
       setOptions(
-        data.map((x: any) => ({
+        data?.map((x: any) => ({
           label: x.display_place,
           value: x.place_id,
           display_address: x.display_address,
+          coordinates: {
+            lon: x.lon || 0,
+            lat: x.lat || 0,
+          },
         })),
       );
-      console.log(data);
     } catch (error) {
       console.error("Lỗi Geoapify:", error);
       setOptions([]);
