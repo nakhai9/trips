@@ -3,7 +3,9 @@ package com.server.api.itineraries.dto;
 import java.util.List;
 import java.util.UUID;
 
+import com.server.api.activities.Activity;
 import com.server.api.activities.dto.ActivityResponseDto;
+import com.server.lib.ReferenceDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +22,5 @@ public class ItineraryResponseDto {
     private UUID id;
     private UUID planId;
     private String destination;
-    private List<ActivityResponseDto> activities;
+    List<ActivityResponseDto> activities;
 }

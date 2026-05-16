@@ -35,7 +35,8 @@ public class ActivityService {
                 .description(payload.getDescription())
                 .longitude(payload.getLongitude())
                 .latitude(payload.getLatitude())
-                .isCompleted(Boolean.TRUE.equals(payload.getIsCompleted()))
+                .isCompleted(payload.getIsCompleted())
+                .addressLine(payload.getAddressLine())
                 .itinerary(itinerary)
                 .build();
 
@@ -55,6 +56,7 @@ public class ActivityService {
                 .longitude(activity.getLongitude())
                 .latitude(activity.getLatitude())
                 .isCompleted(activity.isCompleted())
+                .addressLine(activity.getAddressLine())
                 .build();
     }
 

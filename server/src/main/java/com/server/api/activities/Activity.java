@@ -53,4 +53,7 @@ public class Activity extends BaseEntity {
     @JoinColumn(name="itinerary_id", nullable = false)
     @JsonIgnore
     private Itinerary itinerary;
+
+    @Column(name="address_line", nullable = true)
+    private String addressLine;
 }

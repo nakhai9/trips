@@ -95,4 +95,9 @@ public class PlanService {
                 .endDate(plan.getEndDate())
                 .build();
     }
+
+    public void delete(UUID id) {
+        Plan plan = planRepository.findById(id).orElseThrow(() -> new RuntimeException(("Plan not found")));
+        planRepository.delete(plan);
+    }
 }

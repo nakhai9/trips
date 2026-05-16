@@ -19,5 +19,6 @@ public class ActivityResponseDto {
     private Double latitude;
     private Double longitude;
     private Boolean isCompleted;
+    private String addressLine;
 
 }

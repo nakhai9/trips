@@ -3,16 +3,17 @@ package com.server.api.itineraries;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.stereotype.Service;
-
 import com.server.api.activities.Activity;
 import com.server.api.activities.dto.ActivityResponseDto;
 import com.server.api.itineraries.dto.ItineraryRequestDto;
 import com.server.api.itineraries.dto.ItineraryResponseDto;
+import com.server.api.locations.LocationRepository;
 import com.server.api.plans.Plan;
 import com.server.api.plans.PlanRepository;
 import com.server.lib.DtoMapper;
+import com.server.lib.ReferenceDto;
 import com.server.lib.ResponseId;
+import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
@@ -73,6 +74,7 @@ public class ItineraryService {
                 .endTime(activity.getEndTime())
                 .longitude(activity.getLongitude())
                 .latitude(activity.getLatitude())
+                .addressLine(activity.getAddressLine())
                 .build();
     }
 
