@@ -10,6 +10,7 @@ import { ResponseId } from "@/types/api";
 import { Itinerary, Trip } from "@/types/common";
 import {
   Box,
+  Button,
   Grid,
   IconButton,
   Paper,
@@ -24,11 +25,12 @@ import {
   CalendarClock,
   ChevronLeft,
   ChevronRight,
+  Ellipsis,
   NotepadText,
-  UsersRound,
+  Share2,
 } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import QRCode from "qrcode";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PositionItem } from "../../../../components/TripOpenStreetMapView";
@@ -90,7 +92,7 @@ function useFetchItineraries() {
 export default function TripDetailPage() {
   const params = useParams();
   const tripID = params?.id as string;
-
+  const router = useRouter();
   const { trip, loading: tripLoading, fetchTrip } = useFetchTrip();
   const {
     itineraries,
@@ -107,7 +109,7 @@ export default function TripDetailPage() {
   const [isOpen, setIsOpen] = useState(false);
   // End modal
 
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(1);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -196,20 +198,66 @@ export default function TripDetailPage() {
             }}
           >
             {trip && (
-              <Paper sx={{ mt: 4 }}>
+              <Paper>
                 <Box sx={{ px: 3, py: 1 }}>
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      fontWeight: 600,
-                      letterSpacing: 1,
-                      color: "#e35c35",
-                      textAlign: "left",
-                      fontFamily: "Playfair Display, sans-serif",
-                    }}
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    sx={{ py: 1 }}
                   >
-                    {trip?.title ?? <Skeleton sx={{ maxWidth: 200 }} />}
-                  </Typography>
+                    <Button
+                      variant="text"
+                      onClick={() => router.push("/trips")}
+                      type="button"
+                      startIcon={<ChevronLeft size={20} />}
+                      sx={{
+                        color: "#444444",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      <Typography variant="subtitle2">Quay lại</Typography>
+                    </Button>
+                    <Stack
+                      direction="row"
+                      spacing={0.3}
+                      alignItems="center"
+                      sx={{
+                        display: "inline-flex",
+                        backgroundColor: "#ffffff",
+                        borderRadius: "50px",
+                        boxShadow: "0px 2px 8px rgba(0,0,0,0.15)",
+                        height: "auto",
+                      }}
+                    >
+                      <IconButton aria-label="share" sx={{ color: "#1a2530" }}>
+                        <Share2 size={16} />
+                      </IconButton>
+
+                      <IconButton aria-label="more" sx={{ color: "#1a2530" }}>
+                        <Ellipsis size={16} />
+                      </IconButton>
+                    </Stack>
+                  </Stack>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        fontWeight: 600,
+                        letterSpacing: 1,
+                        color: "#e35c35",
+                        textAlign: "left",
+                        fontFamily: "Playfair Display, sans-serif",
+                      }}
+                    >
+                      {trip?.title ?? <Skeleton sx={{ maxWidth: 200 }} />}
+                    </Typography>
+                  </Stack>
+
                   <Stack
                     direction="row"
                     spacing={2}
@@ -224,16 +272,27 @@ export default function TripDetailPage() {
                         {dayjs(trip?.endDate).format("DD/MM/YYYY")}
                       </Typography>
                     </Stack>
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <UsersRound size={16} />
-                      <Typography variant="body2">x2</Typography>
-                    </Stack>
                   </Stack>
                 </Box>
-                <Tabs variant="fullWidth" value={value} onChange={handleChange}>
-                  <Tab label="Tổng quan" />
-                  <Tab label="Lịch trình" />
-                </Tabs>
+                <Box
+                  sx={{
+                    borderTop: "1px solid #ddd",
+                    borderBottom: "1px solid #ddd",
+                    my: 2,
+                    py: 0.4,
+                  }}
+                >
+                  <Tabs
+                    variant="fullWidth"
+                    value={value}
+                    onChange={handleChange}
+                  >
+                    <Tab label="Tổng quan" />
+                    <Tab label="Lịch trình" />
+                    <Tab label="Bản đồ" />
+                  </Tabs>
+                </Box>
+
                 <Stack direction="column" spacing={2}>
                   {value === 0 && (
                     <>
@@ -262,25 +321,6 @@ export default function TripDetailPage() {
 
                   {value === 1 && trip.canView && (
                     <>
-                      <Box
-                        component="div"
-                        sx={{
-                          width: "100%",
-                          height: 250,
-                          objectFit: "cover",
-                        }}
-                      >
-                        <TripOpenStreetMapView
-                          zoom={13}
-                          positions={selectedItinerary?.activities?.map((x) => {
-                            return {
-                              latitude: x.latitude || 0,
-                              longitude: x.longitude || 0,
-                              label: x.addressLine?.split("-")[0],
-                            } as PositionItem;
-                          })}
-                        />
-                      </Box>
                       <Stack direction="column" spacing={2}>
                         <Stack
                           direction="row"
@@ -310,17 +350,6 @@ export default function TripDetailPage() {
                               }}
                             >
                               NGÀY {currentDay}
-                            </Typography>
-                            <Typography
-                              variant="h6"
-                              sx={{
-                                fontWeight: 600,
-                                color: "#444444",
-                                lineHeight: 1,
-                                textAlign: "center",
-                              }}
-                            >
-                              {selectedItinerary?.destination}
                             </Typography>
                           </Stack>
                           <IconButton
@@ -430,6 +459,41 @@ export default function TripDetailPage() {
                           </Box>
                         )}
                       </Stack>
+                    </>
+                  )}
+
+                  {value === 2 && (
+                    <>
+                      <Box
+                        component="div"
+                        sx={{
+                          width: "100%",
+                          height: 400,
+                          objectFit: "cover",
+                        }}
+                      >
+                        <TripOpenStreetMapView
+                          zoom={13}
+                          positions={selectedItinerary?.activities?.map((x) => {
+                            return {
+                              latitude: x.latitude || 0,
+                              longitude: x.longitude || 0,
+                              label: x.addressLine?.split("-")[0],
+                            } as PositionItem;
+                          })}
+                        />
+                      </Box>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          fontWeight: 500,
+                          color: "#444444",
+                          pb: 2,
+                          textAlign: "center",
+                        }}
+                      >
+                        Bản đồ các địa điểm trong lịch trình
+                      </Typography>
                     </>
                   )}
                 </Stack>

@@ -7,26 +7,17 @@ import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { useGlobalStore } from "@/store/global-store";
 import { Itinerary, ItineraryActivity } from "@/types/common";
 
-import Timeline from "@mui/lab/Timeline";
-import TimelineConnector from "@mui/lab/TimelineConnector";
-import TimelineContent from "@mui/lab/TimelineContent";
-import TimelineDot from "@mui/lab/TimelineDot";
-import TimelineItem from "@mui/lab/TimelineItem";
-import TimelineOppositeContent, {
-  timelineOppositeContentClasses,
-} from "@mui/lab/TimelineOppositeContent";
-import TimelineSeparator from "@mui/lab/TimelineSeparator";
-
 import {
   Box,
   Button,
   IconButton,
+  Paper,
   Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
 
-import { CircleX, MapPin, Plus, ReceiptText, Trash2 } from "lucide-react";
+import { BadgeCheck, CircleX, Eye, MapPin, Plus, Trash2 } from "lucide-react";
 
 import { useState } from "react";
 
@@ -180,7 +171,7 @@ export default function TripItineraryDaily({
     <>
       <Box
         sx={{
-          p: 1,
+          px: 2,
           bgcolor: "#fff",
           height: "100%",
           width: "100%",
@@ -237,28 +228,6 @@ export default function TripItineraryDaily({
           )}
 
           <Stack direction="row" spacing={1} alignItems="center">
-            {itinerary.destination && !isEditingDestination && (
-              <Tooltip title="Thêm hoạt động">
-                <Button
-                  size="small"
-                  onClick={handleAddActivity}
-                  sx={{
-                    background: "#e35c35",
-                    color: "#fff",
-                    fontWeight: 500,
-
-                    borderRadius: 2,
-                    textTransform: "none",
-                    boxShadow: "0 2px 12px #e35c3530",
-                    "&:hover": { background: "#c94e2d" },
-                  }}
-                  startIcon={<Plus size={18} />}
-                >
-                  <span>Thêm hoạt động</span>
-                </Button>
-              </Tooltip>
-            )}
-
             {!isEditingDestination && (
               <Tooltip title="Xóa lịch trình">
                 <IconButton
@@ -293,109 +262,158 @@ export default function TripItineraryDaily({
         <Box
           sx={{
             mt: 2,
-            maxHeight: 400,
-            overflowY: "scroll",
             p: 0,
+            px: 1,
+            maxHeight: 400,
+            overflowY: "auto",
           }}
         >
-          <Timeline
-            sx={{
-              [`& .${timelineOppositeContentClasses.root}`]: {
-                flex: 0.2,
-              },
-              p: 0,
-            }}
-          >
-            {itinerary.activities && itinerary.activities.length > 0 ? (
-              itinerary.activities.map((act, index) => (
-                <TimelineItem key={act.id || index}>
-                  <TimelineOppositeContent
+          {itinerary.activities && itinerary.activities.length > 0 ? (
+            <Stack direction="column" spacing={1}>
+              {itinerary.destination && !isEditingDestination && (
+                <Tooltip title="Thêm hoạt động">
+                  <Button
+                    size="small"
+                    onClick={handleAddActivity}
                     sx={{
-                      flex: "0 0 100px",
-                      maxWidth: "80px",
+                      borderColor: "#e35c35",
+                      color: "#e35c35",
+                      fontWeight: 500,
+
+                      px: 4,
+                      py: 1,
+                      borderRadius: 2,
+                      textTransform: "none",
+                      background: "#fff",
+                      "&:hover": {
+                        borderColor: "#c94e2d",
+                        background: "#fbeee7",
+                      },
                     }}
+                    startIcon={<Plus size={18} />}
+                    variant="outlined"
                   >
-                    {act.startTime ? act.startTime : "--:--"}
-                  </TimelineOppositeContent>
-
-                  <TimelineSeparator>
-                    <TimelineDot
-                      sx={{
-                        bgcolor: act.isCompleted ? "#e35c35" : "",
-                      }}
-                    />
-
-                    <TimelineConnector
-                      sx={{
-                        bgcolor: act.isCompleted ? "#e35c35" : "",
-                      }}
-                    />
-                  </TimelineSeparator>
-
-                  <TimelineContent>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
-                      <Box>{act.description}</Box>
-
-                      <Stack direction="row" spacing={1}>
-                        <IconButton
-                          size="small"
-                          type="button"
-                          onClick={() => handleEditActivity(act)}
-                        >
-                          <ReceiptText size={16} />
-                        </IconButton>
-
-                        <IconButton
-                          size="small"
-                          type="button"
-                          sx={{
-                            color: "#d32f2f",
-                            bgcolor: "rgba(211,47,47,0.08)",
-                            "&:hover": {
-                              bgcolor: "rgba(211,47,47,0.16)",
-                            },
-                          }}
-                          onClick={() => handleDeleteActivity(act)}
-                        >
-                          <Trash2 size={16} />
-                        </IconButton>
-                      </Stack>
-                    </Stack>
-                  </TimelineContent>
-                </TimelineItem>
-              ))
-            ) : (
-              <Stack
-                direction="column"
-                spacing={1.5}
-                alignItems="center"
-                justifyContent="center"
-                sx={{
-                  py: 6,
-                  px: 2,
-                  textAlign: "center",
-                  bgcolor: "#f8fafc",
-                  borderRadius: 2,
-                }}
-              >
-                <Typography
-                  variant="body2"
+                    <span>Thêm hoạt động</span>
+                  </Button>
+                </Tooltip>
+              )}
+              {itinerary.activities?.map((act, index) => (
+                <Paper
+                  key={act.id || index}
+                  elevation={2}
                   sx={{
-                    color: "#6b7280",
-                    maxWidth: 320,
-                    lineHeight: 1.6,
+                    p: 2,
                   }}
                 >
-                  Bắt đầu xây dựng lịch trình bằng cách thêm hoạt động đầu tiên
-                  cho chuyến đi
-                </Typography>
-              </Stack>
-            )}
-          </Timeline>
+                  <Stack direction="row" alignItems="center" spacing={1.5}>
+                    <Box
+                      component="div"
+                      sx={{
+                        width: 56,
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          color: "#2068f7",
+                          fontWeight: 600,
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {act.startTime}
+                      </Typography>
+                    </Box>
+                    <Box component="div">
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "#6b7280",
+
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {act.description}
+                      </Typography>
+
+                      {act.isCompleted ? (
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                          <BadgeCheck
+                            strokeWidth={2}
+                            absoluteStrokeWidth
+                            size={16}
+                            stroke="green"
+                          />
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: "green",
+
+                              lineHeight: 1.6,
+                            }}
+                          >
+                            Hoàn thành
+                          </Typography>
+                        </Stack>
+                      ) : (
+                        <Stack direction="row" spacing={1}>
+                          <IconButton
+                            size="small"
+                            type="button"
+                            onClick={() => {
+                              setActivityModalOpen(true);
+
+                              setActivityForm(act);
+                            }}
+                          >
+                            <Eye size={12} />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleDeleteActivity(act)}
+                            sx={{
+                              color: "#d32f2f",
+                              bgcolor: "rgba(211,47,47,0.08)",
+                              "&:hover": {
+                                bgcolor: "rgba(211,47,47,0.16)",
+                              },
+                            }}
+                          >
+                            <Trash2 size={12} />
+                          </IconButton>
+                        </Stack>
+                      )}
+                    </Box>
+                  </Stack>
+                </Paper>
+              ))}
+            </Stack>
+          ) : (
+            <Stack
+              direction="column"
+              spacing={1.5}
+              alignItems="center"
+              justifyContent="center"
+              sx={{
+                py: 6,
+                px: 2,
+                textAlign: "center",
+                bgcolor: "#f8fafc",
+                borderRadius: 2,
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "#6b7280",
+                  maxWidth: 320,
+                  lineHeight: 1.6,
+                }}
+              >
+                Bắt đầu xây dựng lịch trình bằng cách thêm hoạt động đầu tiên
+                cho chuyến đi
+              </Typography>
+            </Stack>
+          )}
         </Box>
       </Box>
 

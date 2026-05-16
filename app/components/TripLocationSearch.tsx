@@ -19,6 +19,9 @@ type TripLocationSearchProps = {
   searchBy?: "city" | "brand";
   placeholder?: string;
   sx?: SxProps<Theme>;
+  params?: {
+    [key: string]: string;
+  };
   onChange?: (value: LookupItem | null) => void;
   onInputChange?: (value: string) => void;
 };
@@ -28,6 +31,7 @@ export default function TripLocationSearch({
   searchBy = "city",
   placeholder,
   sx,
+  params,
   onChange,
   onInputChange,
 }: TripLocationSearchProps) {
