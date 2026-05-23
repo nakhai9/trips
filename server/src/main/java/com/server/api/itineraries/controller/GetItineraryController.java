@@ -11,9 +11,10 @@ import com.server.api.itineraries.ItineraryService;
 import com.server.api.itineraries.dto.ItineraryResponseDto;
 import com.server.lib.BaseApiResponse;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-
+@Tag(name = "Itineraries", description = "")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/itineraries")

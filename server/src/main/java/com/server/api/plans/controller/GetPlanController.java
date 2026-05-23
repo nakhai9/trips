@@ -11,8 +11,10 @@ import com.server.api.plans.PlanService;
 import com.server.api.plans.dto.PlanResponseDto;
 import com.server.lib.BaseApiResponse;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Plans", description = "")
 @RestController
 @RequestMapping("/api/plans")
 @RequiredArgsConstructor

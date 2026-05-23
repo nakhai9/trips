@@ -1,7 +1,5 @@
 package com.server.api.itineraries.controller;
 
-import java.util.List;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,10 +10,12 @@ import com.server.api.itineraries.dto.ItineraryRequestDto;
 import com.server.lib.BaseApiResponse;
 import com.server.lib.ResponseId;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 
+@Tag(name = "Itineraries", description = "")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/itineraries")

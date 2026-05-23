@@ -13,12 +13,14 @@ import com.server.api.plans.dto.PlanRequestDto;
 import com.server.api.plans.dto.PlanResponseDto;
 import com.server.lib.BaseApiResponse;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/plans")
 @RequiredArgsConstructor
+@Tag(name = "Plans", description = "")
 public class UpdatePlanController {
     private final PlanService planService;
 
