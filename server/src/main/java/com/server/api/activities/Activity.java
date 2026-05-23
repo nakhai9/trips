@@ -25,7 +25,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Activity extends BaseEntity {
-    @Column(name = "description", nullable = false)
+
+    @Column(name="title", nullable= false)
+    private String title;
+
+    @Column(name = "description", nullable = true)
     private String description;
 
     @Column(name="sequence", nullable = false)

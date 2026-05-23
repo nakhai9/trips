@@ -25,8 +25,8 @@ import {
   CalendarClock,
   ChevronLeft,
   ChevronRight,
-  Ellipsis,
   NotepadText,
+  Settings,
   Share2,
 } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -184,7 +184,7 @@ export default function TripDetailPage() {
   return (
     <>
       <RootLayout>
-        <Grid container spacing={2}>
+        <Grid container>
           <Grid
             size={{
               xs: 12,
@@ -198,109 +198,114 @@ export default function TripDetailPage() {
             }}
           >
             {trip && (
-              <Paper>
-                <Box sx={{ px: 3, py: 1 }}>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{ py: 1 }}
-                  >
-                    <Button
-                      variant="text"
-                      onClick={() => router.push("/trips")}
-                      type="button"
-                      startIcon={<ChevronLeft size={20} />}
-                      sx={{
-                        color: "#444444",
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      <Typography variant="subtitle2">Quay lại</Typography>
-                    </Button>
+              <Paper
+                elevation={2}
+                className="nak-detail-wrapper"
+                sx={{
+                  minHeight: "100vh",
+                }}
+              >
+                <Stack direction="column" spacing={2}>
+                  <Box className="trip-heading" sx={{ px: 2, py: 1 }}>
                     <Stack
                       direction="row"
-                      spacing={0.3}
+                      justifyContent="space-between"
                       alignItems="center"
-                      sx={{
-                        display: "inline-flex",
-                        backgroundColor: "#ffffff",
-                        borderRadius: "50px",
-                        boxShadow: "0px 2px 8px rgba(0,0,0,0.15)",
-                        height: "auto",
-                      }}
+                      sx={{ py: 1 }}
                     >
-                      <IconButton aria-label="share" sx={{ color: "#1a2530" }}>
-                        <Share2 size={16} />
-                      </IconButton>
-
-                      <IconButton aria-label="more" sx={{ color: "#1a2530" }}>
-                        <Ellipsis size={16} />
-                      </IconButton>
-                    </Stack>
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="space-between"
-                  >
-                    <Typography
-                      variant="h4"
-                      sx={{
-                        fontWeight: 600,
-                        letterSpacing: 1,
-                        color: "#e35c35",
-                        textAlign: "left",
-                        fontFamily: "Playfair Display, sans-serif",
-                      }}
-                    >
-                      {trip?.title ?? <Skeleton sx={{ maxWidth: 200 }} />}
-                    </Typography>
-                  </Stack>
-
-                  <Stack
-                    direction="row"
-                    spacing={2}
-                    mt={1}
-                    alignItems="center"
-                    justifyContent="flex-start"
-                  >
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <CalendarClock size={16} />
-                      <Typography variant="body2">
-                        {dayjs(trip?.startDate).format("DD/MM/YYYY")} -
-                        {dayjs(trip?.endDate).format("DD/MM/YYYY")}
-                      </Typography>
-                    </Stack>
-                  </Stack>
-                </Box>
-                <Box
-                  sx={{
-                    borderTop: "1px solid #ddd",
-                    borderBottom: "1px solid #ddd",
-                    my: 2,
-                    py: 0.4,
-                  }}
-                >
-                  <Tabs
-                    variant="fullWidth"
-                    value={value}
-                    onChange={handleChange}
-                  >
-                    <Tab label="Tổng quan" />
-                    <Tab label="Lịch trình" />
-                    <Tab label="Bản đồ" />
-                  </Tabs>
-                </Box>
-
-                <Stack direction="column" spacing={2}>
-                  {value === 0 && (
-                    <>
-                      <Box
+                      <Button
+                        variant="text"
+                        onClick={() => router.push("/trips")}
+                        type="button"
+                        startIcon={<ChevronLeft size={20} />}
                         sx={{
-                          p: 2,
+                          color: "#444444",
+                          textTransform: "capitalize",
                         }}
                       >
+                        <Typography variant="subtitle2">Quay lại</Typography>
+                      </Button>
+                      <Stack
+                        direction="row"
+                        spacing={0.3}
+                        alignItems="center"
+                        sx={{
+                          display: "inline-flex",
+                          backgroundColor: "#ffffff",
+                          borderRadius: "50px",
+                          boxShadow: "0px 2px 8px rgba(0,0,0,0.15)",
+                          height: "auto",
+                        }}
+                      >
+                        <IconButton
+                          aria-label="share"
+                          sx={{ color: "#1a2530" }}
+                        >
+                          <Share2 size={16} />
+                        </IconButton>
+
+                        <IconButton aria-label="more" sx={{ color: "#1a2530" }}>
+                          <Settings size={16} />
+                        </IconButton>
+                      </Stack>
+                    </Stack>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
+                      <Typography
+                        variant="h4"
+                        sx={{
+                          fontWeight: 600,
+                          letterSpacing: 1,
+                          color: "#e35c35",
+                          textAlign: "left",
+                          fontFamily: "Playfair Display, sans-serif",
+                        }}
+                      >
+                        {trip?.title ?? <Skeleton sx={{ maxWidth: 200 }} />}
+                      </Typography>
+                    </Stack>
+
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      alignItems="center"
+                      justifyContent="flex-start"
+                    >
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <CalendarClock size={16} />
+                        <Typography variant="body2">
+                          {dayjs(trip?.startDate).format("DD/MM/YYYY")} -
+                          {dayjs(trip?.endDate).format("DD/MM/YYYY")}
+                        </Typography>
+                      </Stack>
+                    </Stack>
+                  </Box>
+
+                  <Box
+                    className="trip-tabs"
+                    sx={{
+                      borderTop: "1px solid #ddd",
+                      borderBottom: "1px solid #ddd",
+                      py: 0.4,
+                    }}
+                  >
+                    <Tabs
+                      variant="fullWidth"
+                      value={value}
+                      onChange={handleChange}
+                    >
+                      <Tab label="Tổng quan" />
+                      <Tab label="Lịch trình" />
+                      <Tab label="Bản đồ" />
+                    </Tabs>
+                  </Box>
+
+                  <Box className="trip-content" sx={{ p: 2, pt: 0 }}>
+                    {value === 0 && (
+                      <>
                         <Stack alignItems="center" direction="column">
                           <Box
                             component="img"
@@ -315,187 +320,190 @@ export default function TripDetailPage() {
                             Quét mã QR để xem chi tiết
                           </Typography>
                         </Stack>
-                      </Box>
-                    </>
-                  )}
+                      </>
+                    )}
 
-                  {value === 1 && trip.canView && (
-                    <>
-                      <Stack direction="column" spacing={2}>
-                        <Stack
-                          direction="row"
-                          spacing={2}
-                          justifyContent="center"
-                          alignItems="center"
-                        >
-                          <IconButton
-                            aria-label="delete"
-                            size="small"
-                            disabled={currentDay === 1}
-                            onClick={() => setCurrentDay(currentDay - 1)}
-                            sx={{
-                              cursor: currentDay === 1 ? "not-allowed" : "",
-                            }}
+                    {value === 1 && trip.canView && (
+                      <>
+                        <Stack direction="column" spacing={1}>
+                          <Stack
+                            direction="row"
+                            spacing={2}
+                            justifyContent="center"
+                            alignItems="center"
+                            className="nak-days-select-section"
                           >
-                            <ChevronLeft />
-                          </IconButton>
-                          <Stack direction="column" spacing={1}>
-                            <Typography
-                              variant="subtitle2"
+                            <IconButton
+                              aria-label="delete"
+                              size="small"
+                              disabled={currentDay === 1}
+                              onClick={() => setCurrentDay(currentDay - 1)}
                               sx={{
-                                fontWeight: 500,
-                                color: "#444444",
-                                lineHeight: 1,
-                                textAlign: "center",
+                                cursor: currentDay === 1 ? "not-allowed" : "",
                               }}
                             >
-                              NGÀY {currentDay}
-                            </Typography>
-                          </Stack>
-                          <IconButton
-                            aria-label="delete"
-                            size="small"
-                            disabled={
-                              currentDay >=
-                              dayjs(trip?.endDate).diff(
-                                dayjs(trip?.startDate),
-                                "day",
-                              )
-                            }
-                            sx={{
-                              cursor:
+                              <ChevronLeft />
+                            </IconButton>
+                            <Stack direction="column" spacing={1}>
+                              <Typography
+                                variant="subtitle2"
+                                sx={{
+                                  fontWeight: 600,
+                                  color: "#444444",
+                                  lineHeight: 1,
+                                  textAlign: "center",
+                                }}
+                              >
+                                NGÀY {currentDay}
+                              </Typography>
+                            </Stack>
+                            <IconButton
+                              aria-label="delete"
+                              size="small"
+                              disabled={
                                 currentDay >=
                                 dayjs(trip?.endDate).diff(
                                   dayjs(trip?.startDate),
                                   "day",
                                 )
-                                  ? "not-allowed"
-                                  : "",
-                            }}
-                            onClick={() => {
-                              setCurrentDay(currentDay + 1);
-                            }}
-                          >
-                            <ChevronRight />
-                          </IconButton>
-                        </Stack>
-
-                        {selectedItinerary && (
-                          <TripItineraryDaily
-                            itinerary={selectedItinerary}
-                            onChange={(event) => handleAutoSave(event)}
-                            onDelete={(event) => handleAutoDelete(event)}
-                            afterSubmitActivityForm={async (response) => {
-                              if (response) {
-                                await fetchItineraries(tripID);
                               }
-                            }}
-                          />
-                        )}
-
-                        {!selectedItinerary && (
-                          <Box
-                            sx={{
-                              bgcolor: "#f8fafc",
-                              borderRadius: 2,
-                              p: 2,
-                              mt: 1,
-                            }}
-                          >
-                            <Stack
-                              direction="column"
-                              spacing={2}
-                              justifyContent="center"
-                              alignItems="center"
+                              sx={{
+                                cursor:
+                                  currentDay >=
+                                  dayjs(trip?.endDate).diff(
+                                    dayjs(trip?.startDate),
+                                    "day",
+                                  )
+                                    ? "not-allowed"
+                                    : "",
+                              }}
+                              onClick={() => {
+                                setCurrentDay(currentDay + 1);
+                              }}
                             >
-                              <Box
-                                sx={{
-                                  width: 72,
-                                  height: 72,
-                                  borderRadius: 3,
-                                  bgcolor: "#fff",
-                                  boxShadow:
-                                    "0 4px 16px rgba(15, 23, 42, 0.08)",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  cursor: "pointer",
-                                  outline: "none",
-                                }}
+                              <ChevronRight />
+                            </IconButton>
+                          </Stack>
+
+                          {selectedItinerary && (
+                            <TripItineraryDaily
+                              itinerary={selectedItinerary}
+                              onChange={(event) => handleAutoSave(event)}
+                              onDelete={(event) => handleAutoDelete(event)}
+                              afterSubmitActivityForm={async (response) => {
+                                if (response) {
+                                  await fetchItineraries(tripID);
+                                }
+                              }}
+                            />
+                          )}
+
+                          {!selectedItinerary && (
+                            <Box
+                              sx={{
+                                bgcolor: "#f8fafc",
+                                borderRadius: 2,
+                                p: 2,
+                                mt: 1,
+                              }}
+                            >
+                              <Stack
+                                direction="column"
+                                spacing={2}
+                                justifyContent="center"
+                                alignItems="center"
                               >
-                                <NotepadText size={48} />
-                              </Box>
-                              <Typography
-                                variant="subtitle1"
-                                sx={{
-                                  fontWeight: 500,
-                                  color: "#444444",
-                                  lineHeight: 1.6,
-                                }}
-                              >
-                                Lên lịch ngay{" | "}
-                                <span
-                                  style={{
-                                    color: "#0052CB",
+                                <Box
+                                  sx={{
+                                    width: 72,
+                                    height: 72,
+                                    borderRadius: 3,
+                                    bgcolor: "#fff",
+                                    boxShadow:
+                                      "0 4px 16px rgba(15, 23, 42, 0.08)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
                                     cursor: "pointer",
-                                  }}
-                                  onClick={() => {
-                                    setItineraries((prev) => [
-                                      ...prev,
-                                      {
-                                        dayNumber: currentDay,
-                                        destination: "",
-                                        location: null,
-                                        planId: tripID,
-                                        activities: [],
-                                      },
-                                    ]);
+                                    outline: "none",
                                   }}
                                 >
-                                  Thêm mới
-                                </span>
-                              </Typography>
-                            </Stack>
-                          </Box>
-                        )}
-                      </Stack>
-                    </>
-                  )}
+                                  <NotepadText size={48} />
+                                </Box>
+                                <Typography
+                                  variant="subtitle1"
+                                  sx={{
+                                    fontWeight: 500,
+                                    color: "#444444",
+                                    lineHeight: 1.6,
+                                  }}
+                                >
+                                  Lên lịch ngay{" | "}
+                                  <span
+                                    style={{
+                                      color: "#0052CB",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() => {
+                                      setItineraries((prev) => [
+                                        ...prev,
+                                        {
+                                          dayNumber: currentDay,
+                                          destination: "",
+                                          location: null,
+                                          planId: tripID,
+                                          activities: [],
+                                        },
+                                      ]);
+                                    }}
+                                  >
+                                    Thêm mới
+                                  </span>
+                                </Typography>
+                              </Stack>
+                            </Box>
+                          )}
+                        </Stack>
+                      </>
+                    )}
 
-                  {value === 2 && (
-                    <>
-                      <Box
-                        component="div"
-                        sx={{
-                          width: "100%",
-                          height: 400,
-                          objectFit: "cover",
-                        }}
-                      >
-                        <TripOpenStreetMapView
-                          zoom={13}
-                          positions={selectedItinerary?.activities?.map((x) => {
-                            return {
-                              latitude: x.latitude || 0,
-                              longitude: x.longitude || 0,
-                              label: x.addressLine?.split("-")[0],
-                            } as PositionItem;
-                          })}
-                        />
-                      </Box>
-                      <Typography
-                        variant="subtitle2"
-                        sx={{
-                          fontWeight: 500,
-                          color: "#444444",
-                          pb: 2,
-                          textAlign: "center",
-                        }}
-                      >
-                        Bản đồ các địa điểm trong lịch trình
-                      </Typography>
-                    </>
-                  )}
+                    {value === 2 && (
+                      <>
+                        <Box
+                          component="div"
+                          sx={{
+                            width: "100%",
+                            height: 400,
+                            objectFit: "cover",
+                          }}
+                        >
+                          <TripOpenStreetMapView
+                            zoom={13}
+                            positions={selectedItinerary?.activities?.map(
+                              (x) => {
+                                return {
+                                  latitude: x.latitude || 0,
+                                  longitude: x.longitude || 0,
+                                  label: x.addressLine?.split("-")[0],
+                                } as PositionItem;
+                              },
+                            )}
+                          />
+                        </Box>
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            fontWeight: 500,
+                            color: "#444444",
+                            pb: 2,
+                            textAlign: "center",
+                          }}
+                        >
+                          Bản đồ các địa điểm trong lịch trình
+                        </Typography>
+                      </>
+                    )}
+                  </Box>
                 </Stack>
               </Paper>
             )}

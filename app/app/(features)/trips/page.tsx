@@ -22,6 +22,7 @@ import {
   Typography,
 } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -170,9 +171,10 @@ export default function TripPage() {
               justifyContent="space-between"
             >
               <Typography
-                sx={{ color: "#444444", fontWeight: 600, fontSize: 18 }}
+                variant="h4"
+                sx={{ color: "#444444", fontWeight: 600, letterSpacing: 1.2 }}
               >
-                Chuyến đi của mọi người tham khảo hoặc sử dụng lại
+                Lịch trình
               </Typography>
 
               <Button
@@ -185,14 +187,15 @@ export default function TripPage() {
                   fontSize: 14,
                   px: 2,
                   py: 1,
-                  borderRadius: 2,
+                  borderRadius: 50,
                   textTransform: "none",
                   boxShadow: "0 2px 12px #e35c3530",
                   "&:hover": { background: "#c94e2d" },
                 }}
+                startIcon={<Plus size={16} />}
                 onClick={() => setIsOpen(!isOpen)}
               >
-                Tạo mới
+                Lịch trình mới
               </Button>
             </Stack>
           </Box>

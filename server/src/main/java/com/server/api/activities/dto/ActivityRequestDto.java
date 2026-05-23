@@ -1,17 +1,22 @@
 package com.server.api.activities.dto;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.NotBlank;
-import lombok.*;
-
 import java.util.UUID;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityRequestDto {
-    @NotBlank(message = "Trường description không được để trống")
+    @NotBlank(message = "Trường hoạt động (title) không được để trống")
+    private String title;
     private String description;
     @NotNull(message = "Trường sequence không được null")
     private Long sequence;

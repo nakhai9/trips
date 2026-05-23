@@ -34,6 +34,7 @@ export default function ActivityForm({
   onChange,
 }: ActivityFormProps) {
   const [form, setForm] = useState<Partial<ItineraryActivity>>({
+    title: initial.title || "",
     description: initial.description || "",
     startTime: initial.startTime || "",
     endTime: initial.endTime || "",
@@ -63,7 +64,14 @@ export default function ActivityForm({
     <Box component="form" sx={{ width: "100%" }}>
       <Stack spacing={2}>
         <TextField
-          label="Mô tả hoạt động"
+          label="Hoạt động "
+          value={form.description}
+          onChange={(e) => handleChange("title", e.target.value)}
+          fullWidth
+          size="small"
+        />
+        <TextField
+          label="Mô tả, ghi chú"
           value={form.description}
           onChange={(e) => handleChange("description", e.target.value)}
           fullWidth

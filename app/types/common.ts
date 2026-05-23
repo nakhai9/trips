@@ -59,7 +59,8 @@ export type ItineraryNotUse = {
 
 export type ItineraryActivity = {
   id?: string;
-  description: string;
+  title: string;
+  description?: string;
   endTime?: string;
   startTime?: string;
   sequence: number;

@@ -1,17 +1,19 @@
 package com.server.api.activities;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
 import com.server.api.activities.dto.ActivityRequestDto;
 import com.server.api.activities.dto.ActivityResponseDto;
 import com.server.api.itineraries.Itinerary;
 import com.server.api.itineraries.ItineraryRepository;
 import com.server.lib.DtoMapper;
 import com.server.lib.ResponseId;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -38,6 +40,7 @@ public class ActivityService {
                 .isCompleted(payload.getIsCompleted())
                 .addressLine(payload.getAddressLine())
                 .itinerary(itinerary)
+                .title(payload.getTitle())
                 .build();
 
         Activity savedActivity = activityRepo.save(activity);
@@ -57,6 +60,7 @@ public class ActivityService {
                 .latitude(activity.getLatitude())
                 .isCompleted(activity.isCompleted())
                 .addressLine(activity.getAddressLine())
+                .title(activity.getTitle())
                 .build();
     }
 
@@ -97,8 +101,8 @@ public class ActivityService {
         Activity activity = activityRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy hoạt động"));
 
-        if (payload.getDescription() != null && !payload.getDescription().isBlank()) {
-            activity.setDescription(payload.getDescription());
+        if (payload.getTitle() != null && !payload.getTitle().isBlank()) {
+            activity.setTitle(payload.getTitle());
         }
         if (payload.getSequence() != null) {
             activity.setSequence(payload.getSequence());
@@ -107,6 +111,7 @@ public class ActivityService {
         activity.setEndTime(payload.getEndTime());
         activity.setLatitude(payload.getLatitude());
         activity.setLongitude(payload.getLongitude());
+        activity.setDescription(payload.getDescription());
         if (payload.getIsCompleted() != null) {
             activity.setCompleted(payload.getIsCompleted());
         }

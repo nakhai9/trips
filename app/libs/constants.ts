@@ -11,7 +11,7 @@ export const TRIP: Trip = {
 
 export const SCHEDULE: Itinerary[] = [
   // {
-  //   day: 1,
+  //   dayNumber: 1,
   //   destination: "Hà Nội",
   //   location: null,
   //   planId: "",
@@ -62,10 +62,28 @@ export const SCHEDULE: Itinerary[] = [
   //       addressLine: "Phố Cổ Hà Nội, Quận Hoàn Kiếm",
   //       isCompleted: false,
   //     },
+  //     {
+  //       sequence: 6,
+  //       startTime: "08:00",
+  //       endTime: "09:30",
+  //       description:
+  //         "Đón sân bay Nội Bài hoặc ga Hà Nội, check-in khách sạn khu phố cổ. Ăn sáng phở truyền thống",
+  //       addressLine: null,
+  //       isCompleted: false,
+  //     },
+  //     {
+  //       sequence: 7,
+  //       startTime: "08:00",
+  //       endTime: "09:30",
+  //       description:
+  //         "Đón sân bay Nội Bài hoặc ga Hà Nội, check-in khách sạn khu phố cổ. Ăn sáng phở truyền thống",
+  //       addressLine: null,
+  //       isCompleted: false,
+  //     },
   //   ],
   // },
   // {
-  //   day: 2,
+  //   dayNumber: 2,
   //   destination: "Vịnh Hạ Long",
   //   location: null,
   //   planId: "",
@@ -116,7 +134,7 @@ export const SCHEDULE: Itinerary[] = [
   //   ],
   // },
   // {
-  //   day: 3,
+  //   dayNumber: 3,
   //   location: null,
   //   planId: "",
   //   destination: "Vịnh Hạ Long",
