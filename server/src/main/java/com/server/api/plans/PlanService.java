@@ -36,8 +36,8 @@ public class PlanService {
 
         Plan plan = Plan.builder()
                 .title(request.getTitle())
-                .isPublic(request.isPublic())
-                .accessCode(request.isPublic() ? null : request.getAccessCode())
+                .isPublic(request.getIsPublic())
+                .accessCode(request.getIsPublic() ? null : request.getAccessCode())
                 .user(user)
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
@@ -68,8 +68,8 @@ public class PlanService {
         plan.setTitle(request.getTitle());
         plan.setStartDate(request.getStartDate());
         plan.setEndDate(request.getEndDate());
-        plan.setPublic(request.isPublic());
-        plan.setAccessCode(request.isPublic() ? null : request.getAccessCode());
+        plan.setPublic(request.getIsPublic());
+        plan.setAccessCode(request.getIsPublic() ? null : request.getAccessCode());
 
         Plan savedPlan = planRepository.save(plan);
         return mapToResponse(savedPlan);

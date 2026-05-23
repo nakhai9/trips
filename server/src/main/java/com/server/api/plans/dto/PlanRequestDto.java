@@ -14,7 +14,7 @@ public class PlanRequestDto {
     @NotBlank(message = "Title is required")
     private String title;
     private String description;
-    private boolean isPublic;
+    private Boolean isPublic;
     private String accessCode;
     private UUID userId;
     @NotNull(message = "Start date is required")
