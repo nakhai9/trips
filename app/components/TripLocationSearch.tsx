@@ -7,7 +7,7 @@ import {
   Stack,
   SxProps,
   Theme,
-  Typography,
+  Typography
 } from "@mui/material";
 import debounce from "lodash/debounce";
 import { Map, MapPin } from "lucide-react";
@@ -54,8 +54,14 @@ export default function TripLocationSearch({
       const response = await fetch(query);
       const data = await response.json();
 
+      if (data.error) {
+        // console.log("Không tìm thấy địa điểm");
+        // return;
+        return;
+      }
+
       setOptions(
-        data?.map((x: any) => ({
+        (data || [])?.map((x: any) => ({
           label: x.display_place,
           value: x.place_id,
           display_address: x.display_address,

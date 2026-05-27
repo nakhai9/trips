@@ -10,8 +10,9 @@ import {
   BadgeCheck,
   MapPin,
   Plus,
+  PlusIcon,
   SquareArrowOutUpRight,
-  Trash2
+  Trash2,
 } from "lucide-react";
 
 import BaseModal from "@/libs/components/modal/BaseModal";
@@ -49,13 +50,11 @@ export default function TripItineraryDaily({
   );
 
   const [destinations, setDestinations] = useState<string[]>([]);
+  const [showSearch, setShowSearch] = useState<boolean>(false);
 
   const hasActivities = (itinerary.activities?.length ?? 0) > 0;
 
   const canEditDestination = !hasActivities;
-
-  const showSearch =
-    !itinerary.destination || (isEditingDestination && canEditDestination);
 
   const handleDestinationChange = (value: { label: string } | null) => {
     // onChange?.({
@@ -66,6 +65,7 @@ export default function TripItineraryDaily({
     setDestinations((prev) => [...prev, value?.label]);
 
     setIsEditingDestination(false);
+    setShowSearch(false);
   };
 
   const handleAddActivity = () => {
@@ -167,7 +167,7 @@ export default function TripItineraryDaily({
   };
 
   return (
-    <>
+    <Box>
       {itinerary.activities && itinerary.activities.length > 0 && (
         <Stack direction="column">
           {itinerary.activities?.map((act, index) => (
@@ -287,16 +287,106 @@ export default function TripItineraryDaily({
         </Stack>
       )}
 
-      {/* <Box
+      <Box
+        sx={{
+          display: !destinations.length ? "none" : "",
+        }}
+      >
+        <Typography
+          variant="body2"
+          sx={{
+            color: "#444444",
+            lineHeight: 1.6,
+            fontWeight: 600,
+            mb: 1,
+            textTransform: "uppercase",
+          }}
+        >
+          Địa điểm chính trong ngày
+        </Typography>
+        <Stack direction="row" spacing={1}>
+          {(destinations ?? []).map((d, idx) => (
+            <Box
+              sx={{
+                border: "1px solid #ddd",
+                fontSize: 14,
+                py: 1,
+                px: 1.5,
+                borderRadius: "50px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 0.5,
+              }}
+              key={d + idx}
+            >
+              <MapPin size={16} />
+              {d}
+            </Box>
+          ))}
+          <IconButton
+            sx={{
+              display: showSearch ? "none" : "",
+            }}
+            onClick={() => setShowSearch(!showSearch)}
+          >
+            <PlusIcon />
+          </IconButton>
+        </Stack>
+      </Box>
+
+      {/* {(!destinations.length || showSearch) && (
+        <Box
+          className="add-destination-section"
+          sx={{
+            width: {
+              xs: "100%",
+              md: 400,
+            },
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            margin: "0 auto",
+            gap: 2,
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#444444",
+              lineHeight: 1.6,
+              fontWeight: 600,
+              textAlign: "center",
+            }}
+          >
+            Bạn muốn đi đâu?
+          </Typography>
+
+          <TripLocationSearch
+            placeholder="Tìm kiếm địa điểm"
+            sx={{
+              width: {
+                xs: "100%",
+              },
+            }}
+            onChange={handleDestinationChange}
+          />
+        </Box>
+      )} */}
+
+      <Box
         sx={{
           backgroundColor: "",
-          p: 2,
-
+          px: 2,
+          py: 5,
           display: "flex",
           justifyContent: "center",
           flexDirection: "column",
           alignItems: "center",
           gap: 1,
+          mt: 2,
+          border: "1px dashed #e35c35",
+          borderRadius: 1,
         }}
       >
         <Typography
@@ -336,110 +426,6 @@ export default function TripItineraryDaily({
         >
           <span>Thêm hoạt động</span>
         </Button>
-      </Box> */}
-
-      <Box>
-        <Typography
-          variant="h5"
-          sx={{
-            color: "#444444",
-            lineHeight: 1.6,
-            fontWeight: 600,
-            textAlign: "center",
-          }}
-        >
-          Bạn muốn đi đâu?
-        </Typography>
-        <Stack direction="row">
-          {destinations.map((d, index) => (
-            <Box
-              key={d + index}
-              sx={{
-                border: "1px solid #ddd",
-                borderRadius: "8px",
-                p: 1,
-                px: 2,
-                flex: 1,
-              }}
-            >
-              <Stack direction="row" justifyContent="space-between">
-                <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
-                  <MapPin size={14} />
-                  <Typography variant="body2">{d}</Typography>
-                </Box>
-                {/* <IconButton size="small" onClick={handleDeleteDestinations}>
-                  <X size={14} />
-                </IconButton> */}
-              </Stack>
-            </Box>
-          ))}
-        </Stack>
-        {/* <Button
-          size="small"
-          variant="outlined"
-          disabled={!destinations.length}
-          sx={{
-            bgcolor: "#f2f2f2",
-            color: "#444444",
-            fontWeight: 500,
-            borderRadius: 50,
-            py: 0.5,
-            px: 2,
-            mt: 1,
-            border: "transparent",
-            textTransform: "none",
-            letterSpacing: 0.5,
-            fontSize: 12,
-          }}
-        >
-          <span>Thêm địa điểm</span>
-        </Button> */}
-        <Box
-          sx={{
-            backgroundColor: "",
-            p: 2,
-
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 2,
-            width: "100%",
-          }}
-        >
-          {(!destinations.length || showSearch) && (
-            <TripLocationSearch
-              placeholder="Tìm kiếm địa điểm"
-              sx={{
-                width: {
-                  xs: "100%",
-                  md: 400,
-                },
-              }}
-              onChange={handleDestinationChange}
-            />
-          )}
-
-          <Button
-            size="small"
-            onClick={handleAddActivity}
-            variant="outlined"
-            disabled={!destinations.length}
-            sx={{
-              bgcolor: "#e35c35",
-              color: "#ffffff",
-              fontWeight: 600,
-              borderRadius: 50,
-              py: 1,
-              px: 4,
-              border: "transparent",
-              textTransform: "none",
-              letterSpacing: 0.5,
-            }}
-          >
-            <span>Lưu địa điểm</span>
-          </Button>
-        </Box>
       </Box>
 
       <BaseModal
@@ -488,7 +474,46 @@ export default function TripItineraryDaily({
           initial={activityForm}
           onChange={handleActivityFormChange}
         />
+
+        <>
+          <Box
+            className="add-destination-section"
+            sx={{
+              width: {
+                xs: "100%",
+                md: 400,
+              },
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              margin: "0 auto",
+              gap: 2,
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{
+                color: "#444444",
+                lineHeight: 1.6,
+                fontWeight: 600,
+                textAlign: "center",
+              }}
+            >
+              Bạn muốn đi đâu?
+            </Typography>
+
+            <TripLocationSearch
+              placeholder="Tìm kiếm địa điểm"
+              sx={{
+                width: {
+                  xs: "100%",
+                },
+              }}
+              onChange={handleDestinationChange}
+            />
+          </Box>
+        </>
       </BaseModal>
-    </>
+    </Box>
   );
 }
