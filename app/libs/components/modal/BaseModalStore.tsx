@@ -5,23 +5,26 @@ export type BaseModalConfig<T = unknown> = {
   maxWidth?: "xs" | "sm" | "md" | "lg" | "xl";
   params?: T;
   actions?: React.ReactNode;
+
+  footer: React.ReactNode | null;
+
+  onSubmit?: (formValue: T) => void | Promise<void>;
 };
 
 type BaseModalStore = {
   isOpen: boolean;
-  component: React.ReactNode | null;
+  content: React.ReactNode | null;
+
   config?: BaseModalConfig;
 
   open: (config?: BaseModalConfig) => void;
 
   close: () => void;
-
-  updateParams: <T>(params: T) => void;
 };
 
 export const useBaseModal = create<BaseModalStore>((set) => ({
   isOpen: false,
-  component: null,
+  content: null,
   config: undefined,
 
   open: (config) =>
@@ -33,15 +36,7 @@ export const useBaseModal = create<BaseModalStore>((set) => ({
   close: () =>
     set({
       isOpen: false,
-      component: null,
+      content: null,
       config: undefined,
     }),
-
-  updateParams: (params) =>
-    set((state) => ({
-      config: {
-        ...state.config,
-        params,
-      },
-    })),
 }));

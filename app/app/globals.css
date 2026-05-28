@@ -30,3 +30,7 @@ body {
   color: #fff !important;
   border: transparent !important;
 }
+
+.MuiPaper-root.MuiDialog-paper {
+  border-radius: 16px !important;
+}

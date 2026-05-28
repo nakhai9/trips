@@ -8,17 +8,15 @@ import { Itinerary, ItineraryActivity } from "@/types/common";
 import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
 import { BadgeCheck, Plus, SquareArrowOutUpRight, Trash2 } from "lucide-react";
 
-import BaseModal from "@/libs/components/modal/BaseModal";
-import {
-  BaseModalConfig,
-  useBaseModal,
-} from "@/libs/components/modal/BaseModalStore";
+import { useBaseDynamicModal } from "@/libs/components/modal/BaseDynamicModalStore";
+import { BaseModalConfig } from "@/libs/components/modal/BaseModalStore";
 import { ResponseId } from "@/types/api";
 import { useState } from "react";
+import ActivityForm from "./forms/ActivityForm";
 import DestinationForm from "./forms/DestinationForm";
 
 type TripItineraryDailyProps = {
-  itinerary: Itinerary;
+  itinerary: Itinerary | null;
 
   onChange?: (itinerary: Itinerary) => void;
   onAddActivity?: (itinerary: Itinerary) => void;
@@ -34,8 +32,7 @@ export default function TripItineraryDaily({
 }: TripItineraryDailyProps) {
   const { showSuccess, showError } = useToast();
   const { setIsLoading } = useGlobalStore();
-
-  const { open, close, config, isOpen } = useBaseModal();
+  const { openBdm } = useBaseDynamicModal();
 
   const [isEditingDestination, setIsEditingDestination] = useState(false);
 
@@ -50,9 +47,7 @@ export default function TripItineraryDaily({
 
   const [showSearch, setShowSearch] = useState<boolean>(false);
 
-  const hasActivities = (itinerary.activities?.length ?? 0) > 0;
-
-  const canEditDestination = !hasActivities;
+  const hasActivities = (itinerary?.activities?.length ?? 0) > 0;
 
   const handleAddActivity = () => {
     setEditingActivity(null);
@@ -111,8 +106,8 @@ export default function TripItineraryDaily({
       else {
         const newActivity: ItineraryActivity = {
           ...activityForm,
-          sequence: (itinerary.activities?.length ?? 0) + 1,
-          itineraryId: itinerary.id,
+          sequence: (itinerary?.activities?.length ?? 0) + 1,
+          itineraryId: itinerary?.id,
         } as ItineraryActivity;
 
         validate(newActivity);
@@ -135,6 +130,7 @@ export default function TripItineraryDaily({
   };
 
   const handleDeleteSchedule = () => {
+    if (!itinerary) return;
     onDelete?.(itinerary);
   };
 
@@ -153,7 +149,7 @@ export default function TripItineraryDaily({
   };
 
   const handleOpenModal = (modalConfig: BaseModalConfig) => {
-    open(modalConfig);
+    // open(modalConfig);
   };
 
   const handleSaveDestinationOfDay = async (itinerary: Itinerary) => {
@@ -185,7 +181,7 @@ export default function TripItineraryDaily({
 
   return (
     <Box>
-      {itinerary.activities && itinerary.activities.length > 0 && (
+      {itinerary?.activities && itinerary.activities.length > 0 && (
         <Stack direction="column">
           {itinerary.activities?.map((act, index) => (
             <Box key={act.id || index}>
@@ -304,55 +300,7 @@ export default function TripItineraryDaily({
         </Stack>
       )}
 
-      {/* <Box
-        sx={{
-          display: !destinations.length ? "none" : "",
-        }}
-      >
-        <Typography
-          variant="body2"
-          sx={{
-            color: "#334155",
-            lineHeight: 1.6,
-            fontWeight: 600,
-            mb: 1,
-            textTransform: "uppercase",
-          }}
-        >
-          Địa điểm chính trong ngày
-        </Typography>
-        <Stack direction="row" spacing={1}>
-          {(destinations ?? []).map((d, idx) => (
-            <Box
-              sx={{
-                border: "1px solid #ddd",
-                fontSize: 14,
-                py: 1,
-                px: 1.5,
-                borderRadius: "50px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 0.5,
-              }}
-              key={d + idx}
-            >
-              <MapPin size={16} />
-              {d}
-            </Box>
-          ))}
-          <IconButton
-            sx={{
-              display: showSearch ? "none" : "",
-            }}
-            onClick={() => setShowSearch(!showSearch)}
-          >
-            <PlusIcon />
-          </IconButton>
-        </Stack>
-      </Box> */}
-
-      {/* <Box
+      <Box
         sx={{
           backgroundColor: "",
           px: 2,
@@ -383,7 +331,18 @@ export default function TripItineraryDaily({
 
         <Button
           size="small"
-          onClick={handleAddActivity}
+          onClick={async () => {
+            const formData = await openBdm(
+              <ActivityForm
+                initial={activityForm}
+                onChange={handleActivityFormChange}
+              />,
+
+              {
+                title: "Thêm hoạt động",
+              },
+            );
+          }}
           sx={{
             borderColor: "#e35c35",
             color: "#e35c35",
@@ -404,7 +363,7 @@ export default function TripItineraryDaily({
         >
           <span>Thêm hoạt động</span>
         </Button>
-      </Box> */}
+      </Box>
 
       <Stack direction="column" justifyContent="center" alignItems="center">
         <Box
@@ -428,43 +387,21 @@ export default function TripItineraryDaily({
         <Button
           type="button"
           size="small"
-          onClick={() =>
-            handleOpenModal({
-              title: "Thêm địa điểm",
-              actions: (
-                <>
-                  <Button
-                    onClick={() => {
-                      close();
-                    }}
-                  >
-                    Hủy
-                  </Button>
+          onClick={async () => {
+            const formData = await openBdm(<DestinationForm />, {
+              title: "AAAA",
+              hideHeader: true,
 
-                  <Button
-                    variant="contained"
-                    onClick={() => {}}
-                    sx={{
-                      background: "#e35c35",
-                      color: "#fff",
-                      fontWeight: 500,
-                      fontSize: 14,
-                      px: 2,
-                      py: 1,
-                      borderRadius: 2,
-                      textTransform: "none",
-                      boxShadow: "0 2px 12px #e35c3530",
-                      "&:hover": {
-                        background: "#c94e2d",
-                      },
-                    }}
-                  >
-                    Lưu
-                  </Button>
-                </>
-              ),
-            })
-          }
+              actions: [
+                {
+                  type: "submit",
+                  text: "Lưu",
+                },
+              ],
+            });
+
+            console.log(formData);
+          }}
           sx={{
             background: "#e35c35",
             color: "#fff",
@@ -483,23 +420,6 @@ export default function TripItineraryDaily({
           <span>Thêm địa điểm</span>
         </Button>
       </Stack>
-
-      <BaseModal
-        open={isOpen}
-        onClose={() => {
-          close();
-        }}
-        title={config?.title}
-        actions={config?.actions}
-        hideHeader={true}
-      >
-        {/* <ActivityForm
-          initial={activityForm}
-          onChange={handleActivityFormChange}
-        /> */}
-
-        <DestinationForm />
-      </BaseModal>
     </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
 import TripLocationSearch from "../TripLocationSearch";
@@ -48,7 +48,7 @@ export default function DestinationForm() {
           onChange={handleDestinationChange}
         />
 
-        <Box>
+        <Stack direction="column" spacing={1}>
           <Typography
             variant="body2"
             sx={{
@@ -56,7 +56,6 @@ export default function DestinationForm() {
               lineHeight: 1.6,
               fontWeight: 500,
               textAlign: "center",
-              mb: 1,
             }}
           >
             ĐỊA ĐIỂM ĐẾN TRONG NGÀY
@@ -77,7 +76,7 @@ export default function DestinationForm() {
               <MapPin size={16} /> {d}
             </Box>
           ))}
-        </Box>
+        </Stack>
       </Box>
     </>
   );

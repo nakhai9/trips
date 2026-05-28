@@ -25,7 +25,6 @@ import {
   CalendarClock,
   ChevronLeft,
   ChevronRight,
-  NotepadText,
   Settings,
   Share2,
 } from "lucide-react";
@@ -385,84 +384,16 @@ export default function TripDetailPage() {
                             </IconButton>
                           </Stack>
 
-                          {selectedItinerary && (
-                            <TripItineraryDaily
-                              itinerary={selectedItinerary}
-                              onChange={(event) => handleAutoSave(event)}
-                              onDelete={(event) => handleAutoDelete(event)}
-                              afterSubmitActivityForm={async (response) => {
-                                if (response) {
-                                  await fetchItineraries(tripID);
-                                }
-                              }}
-                            />
-                          )}
-
-                          {!selectedItinerary && (
-                            <Box
-                              sx={{
-                                bgcolor: "#f8fafc",
-                                borderRadius: 2,
-                                p: 2,
-                                mt: 1,
-                              }}
-                            >
-                              <Stack
-                                direction="column"
-                                spacing={2}
-                                justifyContent="center"
-                                alignItems="center"
-                              >
-                                <Box
-                                  sx={{
-                                    width: 72,
-                                    height: 72,
-                                    borderRadius: 3,
-                                    bgcolor: "#fff",
-                                    boxShadow:
-                                      "0 4px 16px rgba(15, 23, 42, 0.08)",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    cursor: "pointer",
-                                    outline: "none",
-                                  }}
-                                >
-                                  <NotepadText size={48} />
-                                </Box>
-                                <Typography
-                                  variant="subtitle1"
-                                  sx={{
-                                    fontWeight: 500,
-                                    color: "#334155",
-                                    lineHeight: 1.6,
-                                  }}
-                                >
-                                  Lên lịch ngay{" | "}
-                                  <span
-                                    style={{
-                                      color: "#0052CB",
-                                      cursor: "pointer",
-                                    }}
-                                    onClick={() => {
-                                      setItineraries((prev) => [
-                                        ...prev,
-                                        {
-                                          dayNumber: currentDay,
-                                          destination: "",
-                                          location: null,
-                                          planId: tripID,
-                                          activities: [],
-                                        },
-                                      ]);
-                                    }}
-                                  >
-                                    Thêm mới
-                                  </span>
-                                </Typography>
-                              </Stack>
-                            </Box>
-                          )}
+                          <TripItineraryDaily
+                            itinerary={selectedItinerary}
+                            onChange={(event) => handleAutoSave(event)}
+                            onDelete={(event) => handleAutoDelete(event)}
+                            afterSubmitActivityForm={async (response) => {
+                              if (response) {
+                                await fetchItineraries(tripID);
+                              }
+                            }}
+                          />
                         </Stack>
                       </>
                     )}
