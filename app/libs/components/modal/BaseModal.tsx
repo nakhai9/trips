@@ -17,6 +17,7 @@ type BaseModalProps = {
   children: React.ReactNode;
   actions?: React.ReactNode;
   maxWidth?: "xs" | "sm" | "md" | "lg" | "xl";
+  hideHeader?: boolean;
 };
 
 export default function BaseModal({
@@ -26,19 +27,20 @@ export default function BaseModal({
   children,
   actions,
   maxWidth = "sm",
+  hideHeader = false,
 }: BaseModalProps) {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth={maxWidth}>
       {title && (
         <DialogTitle
           sx={{
-            display: "flex",
+            display: hideHeader ? "none" : "flex",
             alignItems: "center",
             justifyContent: "space-between",
             p: 1.5,
           }}
         >
-          <Typography fontWeight={600} sx={{ color: "#444444" }}>
+          <Typography fontWeight={600} sx={{ color: "#334155" }}>
             {title}
           </Typography>
 

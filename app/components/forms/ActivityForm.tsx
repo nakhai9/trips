@@ -1,13 +1,13 @@
 "use client";
 import { ItineraryActivity } from "@/types/common";
 import {
-  Box,
-  FormControlLabel,
-  IconButton,
-  Stack,
-  Switch,
-  TextField,
-  Typography,
+    Box,
+    FormControlLabel,
+    IconButton,
+    Stack,
+    Switch,
+    TextField,
+    Typography,
 } from "@mui/material";
 import { MapPin, Trash2 } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -15,7 +15,7 @@ import { useState } from "react";
 import TripLocationSearch from "../TripLocationSearch";
 import { PositionItem } from "../TripOpenStreetMapView";
 import TripsTimeRangePicker, {
-  TripsTimeRangePickerEvent,
+    TripsTimeRangePickerEvent,
 } from "../ui/TripsTimeRangePicker";
 const TripOpenStreetMapView = dynamic(
   () => import("../TripOpenStreetMapView"),
@@ -185,7 +185,7 @@ export default function ActivityForm({
                       variant="body2"
                       noWrap
                       sx={{
-                        color: "#444444",
+                        color: "#334155",
                         fontSize: 14,
                         fontWeight: 600,
                         lineHeight: 1.3,

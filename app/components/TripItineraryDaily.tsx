@@ -6,19 +6,16 @@ import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { useGlobalStore } from "@/store/global-store";
 import { Itinerary, ItineraryActivity } from "@/types/common";
 import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
-import {
-  BadgeCheck,
-  MapPin,
-  Plus,
-  PlusIcon,
-  SquareArrowOutUpRight,
-  Trash2,
-} from "lucide-react";
+import { BadgeCheck, Plus, SquareArrowOutUpRight, Trash2 } from "lucide-react";
 
 import BaseModal from "@/libs/components/modal/BaseModal";
+import {
+  BaseModalConfig,
+  useBaseModal,
+} from "@/libs/components/modal/BaseModalStore";
+import { ResponseId } from "@/types/api";
 import { useState } from "react";
-import ActivityForm from "./forms/ActivityForm";
-import TripLocationSearch from "./TripLocationSearch";
+import DestinationForm from "./forms/DestinationForm";
 
 type TripItineraryDailyProps = {
   itinerary: Itinerary;
@@ -35,8 +32,10 @@ export default function TripItineraryDaily({
   onDelete,
   afterSubmitActivityForm,
 }: TripItineraryDailyProps) {
-  const { showError } = useToast();
+  const { showSuccess, showError } = useToast();
   const { setIsLoading } = useGlobalStore();
+
+  const { open, close, config, isOpen } = useBaseModal();
 
   const [isEditingDestination, setIsEditingDestination] = useState(false);
 
@@ -49,24 +48,11 @@ export default function TripItineraryDaily({
     {},
   );
 
-  const [destinations, setDestinations] = useState<string[]>([]);
   const [showSearch, setShowSearch] = useState<boolean>(false);
 
   const hasActivities = (itinerary.activities?.length ?? 0) > 0;
 
   const canEditDestination = !hasActivities;
-
-  const handleDestinationChange = (value: { label: string } | null) => {
-    // onChange?.({
-    //   ...itinerary,
-    //   destination: value?.label ?? "",
-    // });
-    if (!value?.label) return;
-    setDestinations((prev) => [...prev, value?.label]);
-
-    setIsEditingDestination(false);
-    setShowSearch(false);
-  };
 
   const handleAddActivity = () => {
     setEditingActivity(null);
@@ -166,6 +152,37 @@ export default function TripItineraryDaily({
     }
   };
 
+  const handleOpenModal = (modalConfig: BaseModalConfig) => {
+    open(modalConfig);
+  };
+
+  const handleSaveDestinationOfDay = async (itinerary: Itinerary) => {
+    setIsLoading(true);
+    try {
+      console.log(itinerary);
+
+      const { location, activities, ...rest } = itinerary;
+
+      if (itinerary.id) {
+        const data = await HttpClient.put<ResponseId>(
+          `${API_URLS.itineraries}/${itinerary.id}`,
+          {
+            ...rest,
+          },
+        );
+      } else {
+        const data = await HttpClient.post<ResponseId>(API_URLS.itineraries, {
+          ...rest,
+        });
+      }
+      showSuccess("Lưu thành công");
+    } catch (error) {
+      showError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Box>
       {itinerary.activities && itinerary.activities.length > 0 && (
@@ -195,7 +212,7 @@ export default function TripItineraryDaily({
                     <Typography
                       variant="body2"
                       sx={{
-                        color: "#444444",
+                        color: "#334155",
 
                         lineHeight: 1.6,
                       }}
@@ -287,7 +304,7 @@ export default function TripItineraryDaily({
         </Stack>
       )}
 
-      <Box
+      {/* <Box
         sx={{
           display: !destinations.length ? "none" : "",
         }}
@@ -295,7 +312,7 @@ export default function TripItineraryDaily({
         <Typography
           variant="body2"
           sx={{
-            color: "#444444",
+            color: "#334155",
             lineHeight: 1.6,
             fontWeight: 600,
             mb: 1,
@@ -333,48 +350,9 @@ export default function TripItineraryDaily({
             <PlusIcon />
           </IconButton>
         </Stack>
-      </Box>
+      </Box> */}
 
-      {/* {(!destinations.length || showSearch) && (
-        <Box
-          className="add-destination-section"
-          sx={{
-            width: {
-              xs: "100%",
-              md: 400,
-            },
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-            margin: "0 auto",
-            gap: 2,
-          }}
-        >
-          <Typography
-            variant="h5"
-            sx={{
-              color: "#444444",
-              lineHeight: 1.6,
-              fontWeight: 600,
-              textAlign: "center",
-            }}
-          >
-            Bạn muốn đi đâu?
-          </Typography>
-
-          <TripLocationSearch
-            placeholder="Tìm kiếm địa điểm"
-            sx={{
-              width: {
-                xs: "100%",
-              },
-            }}
-            onChange={handleDestinationChange}
-          />
-        </Box>
-      )} */}
-
-      <Box
+      {/* <Box
         sx={{
           backgroundColor: "",
           px: 2,
@@ -392,7 +370,7 @@ export default function TripItineraryDaily({
         <Typography
           variant="subtitle1"
           sx={{
-            color: "#444444",
+            color: "#334155",
             maxWidth: 320,
             lineHeight: 1.6,
             fontWeight: 500,
@@ -426,93 +404,101 @@ export default function TripItineraryDaily({
         >
           <span>Thêm hoạt động</span>
         </Button>
-      </Box>
+      </Box> */}
+
+      <Stack direction="column" justifyContent="center" alignItems="center">
+        <Box
+          alt="Trip 2"
+          sx={{ width: "200px", height: "200px", objectFit: "cover" }}
+          component="img"
+          src="https://img.magnific.com/free-vector/inside-country-traveling-abstract-concept-illustration_335657-3912.jpg?semt=ais_hybrid&w=740&q=80"
+        />
+        <Typography
+          variant="body2"
+          sx={{
+            color: "#334155",
+            lineHeight: 1.6,
+            fontWeight: 600,
+            mb: 1,
+            textTransform: "",
+          }}
+        >
+          Hãy chọn địa điểm cho ngày hôm nay
+        </Typography>
+        <Button
+          type="button"
+          size="small"
+          onClick={() =>
+            handleOpenModal({
+              title: "Thêm địa điểm",
+              actions: (
+                <>
+                  <Button
+                    onClick={() => {
+                      close();
+                    }}
+                  >
+                    Hủy
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    onClick={() => {}}
+                    sx={{
+                      background: "#e35c35",
+                      color: "#fff",
+                      fontWeight: 500,
+                      fontSize: 14,
+                      px: 2,
+                      py: 1,
+                      borderRadius: 2,
+                      textTransform: "none",
+                      boxShadow: "0 2px 12px #e35c3530",
+                      "&:hover": {
+                        background: "#c94e2d",
+                      },
+                    }}
+                  >
+                    Lưu
+                  </Button>
+                </>
+              ),
+            })
+          }
+          sx={{
+            background: "#e35c35",
+            color: "#fff",
+            fontWeight: 500,
+            borderRadius: "50px",
+            px: 4,
+            py: 1,
+            borderColor: "#e35c35",
+            textTransform: "none",
+            boxShadow: "0 2px 12px #e35c3530",
+            "&:hover": { background: "#c94e2d" },
+          }}
+          startIcon={<Plus size={18} />}
+          variant="outlined"
+        >
+          <span>Thêm địa điểm</span>
+        </Button>
+      </Stack>
 
       <BaseModal
-        open={activityModalOpen}
+        open={isOpen}
         onClose={() => {
-          setActivityModalOpen(false);
-          setEditingActivity(null);
+          close();
         }}
-        title={editingActivity ? "Chỉnh sửa hoạt động" : "Thêm hoạt động mới"}
-        actions={
-          <>
-            <Button
-              onClick={() => {
-                setActivityModalOpen(false);
-                setEditingActivity(null);
-              }}
-            >
-              Hủy
-            </Button>
-
-            <Button
-              variant="contained"
-              onClick={handleActivityFormSubmit}
-              disabled={!activityForm.description}
-              sx={{
-                background: "#e35c35",
-                color: "#fff",
-                fontWeight: 500,
-                fontSize: 14,
-                px: 2,
-                py: 1,
-                borderRadius: 2,
-                textTransform: "none",
-                boxShadow: "0 2px 12px #e35c3530",
-                "&:hover": {
-                  background: "#c94e2d",
-                },
-              }}
-            >
-              {editingActivity ? "Cập nhật" : "Thêm"}
-            </Button>
-          </>
-        }
+        title={config?.title}
+        actions={config?.actions}
+        hideHeader={true}
       >
-        <ActivityForm
+        {/* <ActivityForm
           initial={activityForm}
           onChange={handleActivityFormChange}
-        />
+        /> */}
 
-        <>
-          <Box
-            className="add-destination-section"
-            sx={{
-              width: {
-                xs: "100%",
-                md: 400,
-              },
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: "column",
-              margin: "0 auto",
-              gap: 2,
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{
-                color: "#444444",
-                lineHeight: 1.6,
-                fontWeight: 600,
-                textAlign: "center",
-              }}
-            >
-              Bạn muốn đi đâu?
-            </Typography>
-
-            <TripLocationSearch
-              placeholder="Tìm kiếm địa điểm"
-              sx={{
-                width: {
-                  xs: "100%",
-                },
-              }}
-              onChange={handleDestinationChange}
-            />
-          </Box>
-        </>
+        <DestinationForm />
       </BaseModal>
     </Box>
   );

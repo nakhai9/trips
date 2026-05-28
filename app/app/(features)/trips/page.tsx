@@ -3,7 +3,7 @@
 import RootLayout from "@/components/layout/RootLayout";
 import TripsCard from "@/components/ui/TripsCard";
 import TripsDateRangePicker, {
-  TripsDateRangePickerProps,
+    TripsDateRangePickerProps,
 } from "@/components/ui/TripsDateRangePicker";
 import { API_URLS } from "@/libs/api/api.constant";
 import { HttpClient } from "@/libs/api/http";
@@ -13,13 +13,13 @@ import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { useGlobalStore } from "@/store/global-store";
 import { ResponseId } from "@/types/api";
 import {
-  Box,
-  Button,
-  FormControlLabel,
-  Grid,
-  Stack,
-  Switch,
-  Typography,
+    Box,
+    Button,
+    FormControlLabel,
+    Grid,
+    Stack,
+    Switch,
+    Typography,
 } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { Plus } from "lucide-react";
@@ -172,7 +172,7 @@ export default function TripPage() {
             >
               <Typography
                 variant="h4"
-                sx={{ color: "#444444", fontWeight: 600, letterSpacing: 1.2 }}
+                sx={{ color: "#334155", fontWeight: 600, letterSpacing: 1.2 }}
               >
                 Lịch trình
               </Typography>

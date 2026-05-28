@@ -1,6 +1,6 @@
 "use client";
 import { LAYOUT_WIDTH_RESPONSIVE } from "@/app/providers";
-import { useBaseModalStore } from "@/libs/components/modal/BaseModalStore";
+import { useBaseModal } from "@/libs/components/modal/BaseModalStore";
 import BaseToast from "@/libs/components/toast/BaseToast";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { useGlobalStore } from "@/store/global-store";
@@ -20,7 +20,7 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
   const { isLoading, loadingMessage, setIsLoading } = useGlobalStore();
   const { message, isShow, type, hideToast } = useToast();
-  const { isOpen, component, config, close } = useBaseModalStore();
+  const { isOpen, component, config, close } = useBaseModal();
 
   return (
     <Box

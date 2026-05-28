@@ -1,9 +1,9 @@
 import { create } from "zustand";
 
-export type BaseModalConfig = {
+export type BaseModalConfig<T = unknown> = {
   title?: string;
   maxWidth?: "xs" | "sm" | "md" | "lg" | "xl";
-  params?: unknown;
+  params?: T;
   actions?: React.ReactNode;
 };
 
@@ -12,29 +12,21 @@ type BaseModalStore = {
   component: React.ReactNode | null;
   config?: BaseModalConfig;
 
-  params: unknown | null;
+  open: (config?: BaseModalConfig) => void;
 
-  open: (
-    component: React.ReactNode,
-    config?: BaseModalConfig,
-    actions?: React.ReactNode,
-  ) => void;
   close: () => void;
-  set: <T>(params: T) => void;
+
+  updateParams: <T>(params: T) => void;
 };
 
-export const useBaseModalStore = create<BaseModalStore>((set) => ({
+export const useBaseModal = create<BaseModalStore>((set) => ({
   isOpen: false,
   component: null,
   config: undefined,
-  actions: undefined,
 
-  params: null,
-
-  open: (component, config, actions) =>
+  open: (config) =>
     set({
       isOpen: true,
-      component,
       config,
     }),
 
@@ -45,5 +37,11 @@ export const useBaseModalStore = create<BaseModalStore>((set) => ({
       config: undefined,
     }),
 
-  set: (params) => set({ params }),
+  updateParams: (params) =>
+    set((state) => ({
+      config: {
+        ...state.config,
+        params,
+      },
+    })),
 }));

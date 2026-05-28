@@ -10,7 +10,7 @@ export default function Home() {
         fontFamily: "Inter, Arial, sans-serif",
         background: "#f8f5f1",
         minHeight: "100vh",
-        color: "#444444",
+        color: "#334155",
       }}
     >
       <Container maxWidth="lg" sx={{ py: 8 }}>
@@ -38,7 +38,7 @@ export default function Home() {
               <Box
                 component="span"
                 sx={{
-                  color: "#444444",
+                  color: "#334155",
                   fontStyle: "italic",
                   fontWeight: 600,
                 }}
@@ -120,7 +120,7 @@ export default function Home() {
             >
               Đánh dấu và Chia sẻ
             </Typography>
-            <Typography sx={{ color: "#444444", fontSize: 18, my: 1 }}>
+            <Typography sx={{ color: "#334155", fontSize: 18, my: 1 }}>
               Đánh dấu/ghim những nơi đã đi qua và chia sẻ dưới dạng hình ảnh
               bản đồ vector
             </Typography>

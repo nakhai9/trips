@@ -7,7 +7,7 @@ import {
   Stack,
   SxProps,
   Theme,
-  Typography
+  Typography,
 } from "@mui/material";
 import debounce from "lodash/debounce";
 import { Map, MapPin } from "lucide-react";
@@ -115,7 +115,7 @@ export default function TripLocationSearch({
     <Autocomplete
       size="small"
       freeSolo // ← Quan trọng: nên bật khi dùng search động
-      value={value}
+      value={null}
       onChange={handleChange}
       inputValue={inputValue}
       onInputChange={(_, newInputValue) => {

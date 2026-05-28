@@ -219,7 +219,7 @@ export default function TripDetailPage() {
                         type="button"
                         startIcon={<ChevronLeft size={20} />}
                         sx={{
-                          color: "#444444",
+                          color: "#334155",
                           textTransform: "capitalize",
                         }}
                       >
@@ -349,7 +349,7 @@ export default function TripDetailPage() {
                                 variant="subtitle2"
                                 sx={{
                                   fontWeight: 600,
-                                  color: "#444444",
+                                  color: "#334155",
                                   lineHeight: 1,
                                   textAlign: "center",
                                 }}
@@ -434,7 +434,7 @@ export default function TripDetailPage() {
                                   variant="subtitle1"
                                   sx={{
                                     fontWeight: 500,
-                                    color: "#444444",
+                                    color: "#334155",
                                     lineHeight: 1.6,
                                   }}
                                 >
@@ -494,7 +494,7 @@ export default function TripDetailPage() {
                           variant="subtitle2"
                           sx={{
                             fontWeight: 500,
-                            color: "#444444",
+                            color: "#334155",
                             pb: 2,
                             textAlign: "center",
                           }}
