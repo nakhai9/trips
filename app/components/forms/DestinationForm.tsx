@@ -1,14 +1,18 @@
+import { useBaseDynamicModal } from "@/libs/components/modal/BaseDynamicModalStore";
 import { Box, Stack, Typography } from "@mui/material";
 import { MapPin } from "lucide-react";
-import { useState } from "react";
 import TripLocationSearch from "../TripLocationSearch";
 
 export default function DestinationForm() {
-  const [destinations, setDestinations] = useState<string[]>([]);
+  const { config, updateFormData } = useBaseDynamicModal();
 
   const handleDestinationChange = (value: { label: string } | null) => {
     if (!value?.label) return;
-    setDestinations((prev) => [...prev, value?.label]);
+    // setDestinations((prev) => [...prev, value?.label]);
+
+    updateFormData({
+      destinations: [...config?.formData?.destinations, value.label],
+    });
   };
   return (
     <>
@@ -60,22 +64,26 @@ export default function DestinationForm() {
           >
             ĐỊA ĐIỂM ĐẾN TRONG NGÀY
           </Typography>
-          {destinations.map((d, idx) => (
-            <Box
-              key={d + idx}
-              sx={{
-                border: "1px solid #ddd",
-                borderRadius: 5,
-                px: 2,
-                py: 1,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              <MapPin size={16} /> {d}
-            </Box>
-          ))}
+          <Stack direction="row" spacing={1} flexWrap="wrap">
+            {config?.formData?.destinations?.map((d: string, idx: number) => (
+              <Box
+                key={d.trim() + idx}
+                sx={{
+                  border: "1px solid #ddd",
+                  borderRadius: 5,
+                  px: 2,
+                  py: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  fontSize: 12,
+                  color: "#334155",
+                }}
+              >
+                <MapPin size={14} /> {d.trim()}
+              </Box>
+            ))}
+          </Stack>
         </Stack>
       </Box>
     </>

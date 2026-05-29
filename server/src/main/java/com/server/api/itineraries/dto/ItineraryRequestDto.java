@@ -15,11 +15,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class ItineraryRequestDto {
-    private UUID id;
     @NotNull(message = "Trường dayNumber không được để trống")
     private Long dayNumber;
     private UUID planId;
 //    private UUID locId;
-    @NotNull(message = "Trường destination không được để trống")
     private String destination;
+    private String destinations;
 }

@@ -6,7 +6,14 @@ import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { useGlobalStore } from "@/store/global-store";
 import { Itinerary, ItineraryActivity } from "@/types/common";
 import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
-import { BadgeCheck, Plus, SquareArrowOutUpRight, Trash2 } from "lucide-react";
+import {
+  BadgeCheck,
+  MapPin,
+  Pen,
+  Plus,
+  SquareArrowOutUpRight,
+  Trash2,
+} from "lucide-react";
 
 import { useBaseDynamicModal } from "@/libs/components/modal/BaseDynamicModalStore";
 import { BaseModalConfig } from "@/libs/components/modal/BaseModalStore";
@@ -181,6 +188,69 @@ export default function TripItineraryDaily({
 
   return (
     <Box>
+      <Box>
+        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1.5 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              color: "#334155",
+              maxWidth: 320,
+              lineHeight: 1.6,
+              fontWeight: 500,
+            }}
+          >
+            ĐỊA ĐIỂM CHÍNH TRONG NGÀY
+          </Typography>
+          <IconButton
+            type="button"
+            onClick={async () => {
+              console.log(
+                itinerary?.destinations?.split(",").map((x) => x.trim()),
+              );
+              const formData = await openBdm(<DestinationForm />, {
+                title: "AAAA",
+                hideHeader: true,
+                formData: {
+                  destinations: itinerary?.destinations
+                    ?.split(",")
+                    .map((x) => x.trim()),
+                },
+                actions: [
+                  {
+                    type: "submit",
+                    text: "Lưu",
+                  },
+                ],
+              });
+
+              console.log(formData);
+            }}
+          >
+            <Pen size={14} />
+          </IconButton>
+        </Stack>
+        <Stack direction="row" spacing={1} flexWrap="wrap">
+          {itinerary?.destinations?.split(",").map((d, idx) => (
+            <Box
+              key={d.trim() + idx}
+              sx={{
+                border: "1px solid #ddd",
+                borderRadius: 5,
+                px: 2,
+                py: 1,
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                fontSize: 12,
+                color: "#334155",
+              }}
+            >
+              <MapPin size={14} /> {d.trim()}
+            </Box>
+          ))}
+        </Stack>
+      </Box>
+
       {itinerary?.activities && itinerary.activities.length > 0 && (
         <Stack direction="column">
           {itinerary.activities?.map((act, index) => (
@@ -365,61 +435,63 @@ export default function TripItineraryDaily({
         </Button>
       </Box>
 
-      <Stack direction="column" justifyContent="center" alignItems="center">
-        <Box
-          alt="Trip 2"
-          sx={{ width: "200px", height: "200px", objectFit: "cover" }}
-          component="img"
-          src="https://img.magnific.com/free-vector/inside-country-traveling-abstract-concept-illustration_335657-3912.jpg?semt=ais_hybrid&w=740&q=80"
-        />
-        <Typography
-          variant="body2"
-          sx={{
-            color: "#334155",
-            lineHeight: 1.6,
-            fontWeight: 600,
-            mb: 1,
-            textTransform: "",
-          }}
-        >
-          Hãy chọn địa điểm cho ngày hôm nay
-        </Typography>
-        <Button
-          type="button"
-          size="small"
-          onClick={async () => {
-            const formData = await openBdm(<DestinationForm />, {
-              title: "AAAA",
-              hideHeader: true,
+      {!(itinerary?.destinations?.split(",") || []).length && (
+        <Stack direction="column" justifyContent="center" alignItems="center">
+          <Box
+            alt="Trip 2"
+            sx={{ width: "200px", height: "200px", objectFit: "cover" }}
+            component="img"
+            src="https://img.magnific.com/free-vector/inside-country-traveling-abstract-concept-illustration_335657-3912.jpg?semt=ais_hybrid&w=740&q=80"
+          />
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#334155",
+              lineHeight: 1.6,
+              fontWeight: 600,
+              mb: 1,
+              textTransform: "",
+            }}
+          >
+            Hãy chọn địa điểm cho ngày hôm nay
+          </Typography>
+          <Button
+            type="button"
+            size="small"
+            onClick={async () => {
+              const formData = await openBdm(<DestinationForm />, {
+                title: "AAAA",
+                hideHeader: true,
 
-              actions: [
-                {
-                  type: "submit",
-                  text: "Lưu",
-                },
-              ],
-            });
+                actions: [
+                  {
+                    type: "submit",
+                    text: "Lưu",
+                  },
+                ],
+              });
 
-            console.log(formData);
-          }}
-          sx={{
-            background: "#e35c35",
-            color: "#fff",
-            fontWeight: 500,
-            borderRadius: "50px",
-            px: 4,
-            py: 1,
-            borderColor: "#e35c35",
-            textTransform: "none",
-            boxShadow: "0 2px 12px #e35c3530",
-            "&:hover": { background: "#c94e2d" },
-          }}
-          startIcon={<Plus size={18} />}
-          variant="outlined"
-        >
-          <span>Thêm địa điểm</span>
-        </Button>
-      </Stack>
+              console.log(formData);
+            }}
+            sx={{
+              background: "#e35c35",
+              color: "#fff",
+              fontWeight: 500,
+              borderRadius: "50px",
+              px: 4,
+              py: 1,
+              borderColor: "#e35c35",
+              textTransform: "none",
+              boxShadow: "0 2px 12px #e35c3530",
+              "&:hover": { background: "#c94e2d" },
+            }}
+            startIcon={<Plus size={18} />}
+            variant="outlined"
+          >
+            <span>Thêm địa điểm</span>
+          </Button>
+        </Stack>
+      )}
     </Box>
   );
 }

@@ -6,6 +6,10 @@ export type BaseDynamicModalConfig = {
   maxWidth?: "xs" | "sm" | "md" | "lg" | "xl";
   hideHeader?: boolean;
   actions?: any;
+
+  formData?: {
+    [key: string]: any;
+  };
 };
 
 type BaseDynamicModalState = {
@@ -20,7 +24,9 @@ type BaseDynamicModalState = {
   ) => Promise<T>;
   closeBdm: () => void;
 
-  resolveFn: ((value: any) => void) | null;
+  updateFormData: (formData: any) => void;
+
+  resolveFn: ((formData: any) => void) | null;
 };
 
 export const useBaseDynamicModal = create<BaseDynamicModalState>((set) => ({
@@ -49,5 +55,15 @@ export const useBaseDynamicModal = create<BaseDynamicModalState>((set) => ({
 
   resetBdm: () => {
     set({ content: null, config: {}, resolveFn: null });
+  },
+
+  updateFormData: (formData: any) => {
+    set((state) => ({
+      ...state,
+      config: {
+        ...state.config,
+        formData,
+      },
+    }));
   },
 }));

@@ -1,19 +1,24 @@
 package com.server.api.itineraries;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
+
 import com.server.api.activities.Activity;
-import com.server.api.locations.Location;
 import com.server.api.plans.Plan;
 import com.server.lib.BaseEntity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Table(name="mst_itineraries")
@@ -39,4 +44,7 @@ public class Itinerary extends BaseEntity {
 
     @Column(name="destination", nullable = false)
     private String destination;
+
+    @Column(name="destinations", nullable = false)
+    private String destinations;
 }

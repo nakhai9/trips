@@ -34,6 +34,7 @@ public class ItineraryService {
                 .dayNumber(request.getDayNumber())
                 .plan(plan)
                 .destination((request.getDestination()))
+                .destinations(request.getDestinations())
                 .build();
         Itinerary savedItinerary = itineraryRepo.save(itinerary);
         return new ResponseId(savedItinerary.getId().toString());
@@ -57,6 +58,7 @@ public class ItineraryService {
                 .dayNumber(itinerary.getDayNumber())
                 .planId(itinerary.getPlan().getId())
                 .destination(itinerary.getDestination())
+                .destinations(itinerary.getDestinations())
                 .activities(itinerary.getActivities().stream()
                         .map(this::mapActivity)
                         .toList())
@@ -96,6 +98,10 @@ public class ItineraryService {
 
         if (payload.getDestination() != null) {
             itinerary.setDestination(payload.getDestination());
+        }
+
+         if (payload.getDestinations() != null) {
+            itinerary.setDestinations(payload.getDestinations());
         }
 
         if (payload.getPlanId() != null) {

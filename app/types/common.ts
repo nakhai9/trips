@@ -77,6 +77,7 @@ export type Itinerary = {
   location: Ref | null;
   planId: string;
   destination?: string;
+  destinations?: string;
 
   activities?: ItineraryActivity[];
 } & ObjectId;
