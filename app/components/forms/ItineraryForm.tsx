@@ -95,6 +95,8 @@ export default function ItineraryForm() {
         }
       }
 
+      config?.onSuccess?.(true);
+
       setIsLoading(false);
     } catch (error) {
       showError(error);

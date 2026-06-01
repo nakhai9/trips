@@ -10,6 +10,8 @@ export type BaseDynamicModalConfig = {
   formData?: {
     [key: string]: any;
   };
+
+  onSuccess?: (success: boolean) => void;
 };
 
 type BaseDynamicModalState = {
@@ -25,15 +27,13 @@ type BaseDynamicModalState = {
   closeBdm: () => void;
 
   updateFormData: (formData: any) => void;
-
-  onSubmit: ((formData: any) => void) | null;
 };
 
 export const useBaseDynamicModal = create<BaseDynamicModalState>((set) => ({
   isOpen: false,
   content: null,
   config: {},
-  onSubmit: null,
+  onSuccess: undefined,
 
   openBdm: (content, config = {}) => {
     return new Promise((resolve) => {
@@ -43,7 +43,6 @@ export const useBaseDynamicModal = create<BaseDynamicModalState>((set) => ({
         config: {
           ...config,
         },
-        onSubmit: resolve,
       });
     });
   },
@@ -54,7 +53,7 @@ export const useBaseDynamicModal = create<BaseDynamicModalState>((set) => ({
     }),
 
   resetBdm: () => {
-    set({ content: null, config: {}, onSubmit: null });
+    set({ content: null, config: {} });
   },
 
   updateFormData: (formData: any) => {
