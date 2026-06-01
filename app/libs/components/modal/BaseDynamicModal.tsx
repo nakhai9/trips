@@ -1,12 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Typography,
-} from "@mui/material";
+import { Dialog, DialogTitle, IconButton, Typography } from "@mui/material";
 import { X } from "lucide-react";
 import { useBaseDynamicModal } from "./BaseDynamicModalStore";
 
@@ -30,6 +22,7 @@ export default function BaseDynamicModal() {
             justifyContent: "space-between",
             py: 1.5,
             px: 2,
+            color: "#334155",
           }}
         >
           <Typography fontWeight={600} sx={{ color: "#334155" }}>
@@ -41,9 +34,11 @@ export default function BaseDynamicModal() {
           </IconButton>
         </DialogTitle>
 
-        <DialogContent>{content}</DialogContent>
+        {content}
 
-        <DialogActions sx={{ p: 1.5 }}>
+        {/* <DialogContent>{content}</DialogContent> */}
+
+        {/* <DialogActions sx={{ p: 1.5 }}>
           <Button
             variant="outlined"
             onClick={closeBdm}
@@ -84,7 +79,7 @@ export default function BaseDynamicModal() {
               {act.text || "Submit"}
             </Button>
           ))}
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     </>
   );

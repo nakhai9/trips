@@ -330,7 +330,7 @@ export default function TripDetailPage() {
                             spacing={2}
                             justifyContent="center"
                             alignItems="center"
-                            className="nak-days-select-section"
+                            className="nak-days-selector-section"
                           >
                             <IconButton
                               aria-label="delete"
@@ -385,6 +385,8 @@ export default function TripDetailPage() {
                           </Stack>
 
                           <TripItineraryDaily
+                            planId={tripID}
+                            dayNumber={currentDay}
                             itinerary={selectedItinerary}
                             onChange={(event) => handleAutoSave(event)}
                             onDelete={(event) => handleAutoDelete(event)}

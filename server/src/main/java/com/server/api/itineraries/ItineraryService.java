@@ -46,7 +46,7 @@ public class ItineraryService {
     }
 
     public ItineraryResponseDto get(UUID id) {
-        Itinerary itinerary = itineraryRepo.findWithLocationById(id)
+        Itinerary itinerary = itineraryRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch trình với id: " + id));
 
         return mapToResponse(itinerary);

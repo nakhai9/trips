@@ -10,6 +10,7 @@ import {
   BadgeCheck,
   MapPin,
   Pen,
+  Plane,
   Plus,
   SquareArrowOutUpRight,
   Trash2,
@@ -20,11 +21,12 @@ import { BaseModalConfig } from "@/libs/components/modal/BaseModalStore";
 import { ResponseId } from "@/types/api";
 import { useState } from "react";
 import ActivityForm from "./forms/ActivityForm";
-import DestinationForm from "./forms/DestinationForm";
+import ItineraryForm from "./forms/ItineraryForm";
 
 type TripItineraryDailyProps = {
   itinerary: Itinerary | null;
-
+  dayNumber: number;
+  planId: string;
   onChange?: (itinerary: Itinerary) => void;
   onAddActivity?: (itinerary: Itinerary) => void;
   onDelete?: (itinerary: Itinerary) => void;
@@ -32,7 +34,9 @@ type TripItineraryDailyProps = {
 };
 
 export default function TripItineraryDaily({
+  dayNumber,
   itinerary,
+  planId,
   onChange,
   onDelete,
   afterSubmitActivityForm,
@@ -188,68 +192,61 @@ export default function TripItineraryDaily({
 
   return (
     <Box>
-      <Box>
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1.5 }}>
-          <Typography
-            variant="subtitle1"
-            sx={{
-              color: "#334155",
-              maxWidth: 320,
-              lineHeight: 1.6,
-              fontWeight: 500,
-            }}
+      {itinerary?.destinations && (
+        <Box>
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            sx={{ mb: 1.5 }}
           >
-            ĐỊA ĐIỂM CHÍNH TRONG NGÀY
-          </Typography>
-          <IconButton
-            type="button"
-            onClick={async () => {
-              console.log(
-                itinerary?.destinations?.split(",").map((x) => x.trim()),
-              );
-              const formData = await openBdm(<DestinationForm />, {
-                title: "AAAA",
-                hideHeader: true,
-                formData: {
-                  destinations: itinerary?.destinations
-                    ?.split(",")
-                    .map((x) => x.trim()),
-                },
-                actions: [
-                  {
-                    type: "submit",
-                    text: "Lưu",
-                  },
-                ],
-              });
-
-              console.log(formData);
-            }}
-          >
-            <Pen size={14} />
-          </IconButton>
-        </Stack>
-        <Stack direction="row" spacing={1} flexWrap="wrap">
-          {itinerary?.destinations?.split(",").map((d, idx) => (
-            <Box
-              key={d.trim() + idx}
+            <Typography
+              variant="subtitle1"
               sx={{
-                border: "1px solid #ddd",
-                borderRadius: 5,
-                px: 2,
-                py: 1,
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                fontSize: 12,
                 color: "#334155",
+                maxWidth: 320,
+                lineHeight: 1.6,
+                fontWeight: 500,
               }}
             >
-              <MapPin size={14} /> {d.trim()}
-            </Box>
-          ))}
-        </Stack>
-      </Box>
+              ĐỊA ĐIỂM CHÍNH TRONG NGÀY
+            </Typography>
+            <IconButton
+              type="button"
+              onClick={async () => {
+                const form = await openBdm(<ItineraryForm />, {
+                  title: "Kê hoạch ngày " + dayNumber,
+                  formData: {
+                    ...itinerary,
+                  },
+                });
+              }}
+            >
+              <Pen size={14} />
+            </IconButton>
+          </Stack>
+          <Stack direction="row" spacing={1} flexWrap="wrap">
+            {itinerary?.destinations?.split(",").map((d, idx) => (
+              <Box
+                key={d.trim() + idx}
+                sx={{
+                  border: "1px solid #ddd",
+                  borderRadius: 5,
+                  px: 2,
+                  py: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  fontSize: 12,
+                  color: "#334155",
+                }}
+              >
+                <MapPin size={14} /> {d.trim()}
+              </Box>
+            ))}
+          </Stack>
+        </Box>
+      )}
 
       {itinerary?.activities && itinerary.activities.length > 0 && (
         <Stack direction="column">
@@ -370,70 +367,72 @@ export default function TripItineraryDaily({
         </Stack>
       )}
 
-      <Box
-        sx={{
-          backgroundColor: "",
-          px: 2,
-          py: 5,
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 1,
-          mt: 2,
-          border: "1px dashed #e35c35",
-          borderRadius: 1,
-        }}
-      >
-        <Typography
-          variant="subtitle1"
+      {itinerary?.activities && !itinerary.activities.length && (
+        <Box
           sx={{
-            color: "#334155",
-            maxWidth: 320,
-            lineHeight: 1.6,
-            fontWeight: 500,
-            textAlign: "center",
+            backgroundColor: "",
+            px: 2,
+            py: 5,
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 1,
+            mt: 2,
+            border: "1px dashed #e35c35",
+            borderRadius: 1,
           }}
         >
-          Bắt đầu xây dựng lịch trình bằng cách thêm hoạt động đầu tiên cho
-          chuyến đi
-        </Typography>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              color: "#334155",
+              maxWidth: 320,
+              lineHeight: 1.6,
+              fontWeight: 500,
+              textAlign: "center",
+            }}
+          >
+            Bắt đầu xây dựng lịch trình bằng cách thêm hoạt động đầu tiên cho
+            chuyến đi
+          </Typography>
 
-        <Button
-          size="small"
-          onClick={async () => {
-            const formData = await openBdm(
-              <ActivityForm
-                initial={activityForm}
-                onChange={handleActivityFormChange}
-              />,
+          <Button
+            size="small"
+            onClick={async () => {
+              const formData = await openBdm(
+                <ActivityForm
+                  initial={activityForm}
+                  onChange={handleActivityFormChange}
+                />,
 
-              {
-                title: "Thêm hoạt động",
+                {
+                  title: "Thêm hoạt động",
+                },
+              );
+            }}
+            sx={{
+              borderColor: "#e35c35",
+              color: "#e35c35",
+              fontWeight: 500,
+
+              px: 4,
+              py: 1,
+              borderRadius: 2,
+              textTransform: "none",
+              background: "#fff",
+              "&:hover": {
+                borderColor: "#c94e2d",
+                background: "#fbeee7",
               },
-            );
-          }}
-          sx={{
-            borderColor: "#e35c35",
-            color: "#e35c35",
-            fontWeight: 500,
-
-            px: 4,
-            py: 1,
-            borderRadius: 2,
-            textTransform: "none",
-            background: "#fff",
-            "&:hover": {
-              borderColor: "#c94e2d",
-              background: "#fbeee7",
-            },
-          }}
-          startIcon={<Plus size={18} />}
-          variant="outlined"
-        >
-          <span>Thêm hoạt động</span>
-        </Button>
-      </Box>
+            }}
+            startIcon={<Plus size={18} />}
+            variant="outlined"
+          >
+            <span>Thêm hoạt động</span>
+          </Button>
+        </Box>
+      )}
 
       {!(itinerary?.destinations?.split(",") || []).length && (
         <Stack direction="column" justifyContent="center" alignItems="center">
@@ -459,24 +458,20 @@ export default function TripItineraryDaily({
             type="button"
             size="small"
             onClick={async () => {
-              const formData = await openBdm(<DestinationForm />, {
-                title: "AAAA",
-                hideHeader: true,
-
-                actions: [
-                  {
-                    type: "submit",
-                    text: "Lưu",
-                  },
-                ],
+              openBdm(<ItineraryForm />, {
+                title: "Kế hoạch ngày " + dayNumber,
+                // hideHeader: true,
+                formData: {
+                  dayNumber: dayNumber,
+                  ...itinerary,
+                  planId: planId,
+                },
               });
-
-              console.log(formData);
             }}
             sx={{
               background: "#e35c35",
               color: "#fff",
-              fontWeight: 500,
+              fontWeight: 600,
               borderRadius: "50px",
               px: 4,
               py: 1,
@@ -485,10 +480,10 @@ export default function TripItineraryDaily({
               boxShadow: "0 2px 12px #e35c3530",
               "&:hover": { background: "#c94e2d" },
             }}
-            startIcon={<Plus size={18} />}
+            startIcon={<Plane size={18} />}
             variant="outlined"
           >
-            <span>Thêm địa điểm</span>
+            <span>Lập kế hoạch chuyến đi</span>
           </Button>
         </Stack>
       )}
