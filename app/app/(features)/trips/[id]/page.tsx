@@ -388,9 +388,7 @@ export default function TripDetailPage() {
                             planId={tripID}
                             dayNumber={currentDay}
                             itinerary={selectedItinerary}
-                            onChange={(event) => handleAutoSave(event)}
-                            onDelete={(event) => handleAutoDelete(event)}
-                            afterSubmitActivityForm={async (response) => {
+                            afterSubmitForm={async (response) => {
                               if (response) {
                                 await fetchItineraries(tripID);
                               }

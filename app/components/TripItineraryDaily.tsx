@@ -30,7 +30,7 @@ type TripItineraryDailyProps = {
   onChange?: (itinerary: Itinerary) => void;
   onAddActivity?: (itinerary: Itinerary) => void;
   onDelete?: (itinerary: Itinerary) => void;
-  afterSubmitActivityForm?: (response: boolean) => void;
+  afterSubmitForm?: (response: boolean) => void;
 };
 
 export default function TripItineraryDaily({
@@ -39,7 +39,7 @@ export default function TripItineraryDaily({
   planId,
   onChange,
   onDelete,
-  afterSubmitActivityForm,
+  afterSubmitForm,
 }: TripItineraryDailyProps) {
   const { showSuccess, showError } = useToast();
   const { setIsLoading } = useGlobalStore();
@@ -132,7 +132,7 @@ export default function TripItineraryDaily({
       setActivityModalOpen(false);
       setEditingActivity(null);
 
-      afterSubmitActivityForm?.(true);
+      afterSubmitForm?.(true);
     } catch (err: any) {
       showError(err?.message || "Không thể lưu hoạt động");
     } finally {
@@ -151,7 +151,7 @@ export default function TripItineraryDaily({
 
       await HttpClient.delete(`${API_URLS.activities}/${activity.id}`);
 
-      afterSubmitActivityForm?.(true);
+      afterSubmitForm?.(true);
     } catch (err: any) {
       showError(err?.message || "Không thể xóa hoạt động");
     } finally {
@@ -218,6 +218,10 @@ export default function TripItineraryDaily({
                   title: "Kê hoạch ngày " + dayNumber,
                   formData: {
                     ...itinerary,
+                  },
+                  onSuccess: (success) => {
+                    if (!success) return;
+                    afterSubmitForm?.(true);
                   },
                 });
               }}
