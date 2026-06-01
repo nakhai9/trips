@@ -1,5 +1,6 @@
 package com.server.api.itineraries;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,6 +61,7 @@ public class ItineraryService {
                 .destination(itinerary.getDestination())
                 .destinations(itinerary.getDestinations())
                 .activities(itinerary.getActivities().stream()
+                        .sorted(Comparator.comparing(Activity::getCreatedAt))
                         .map(this::mapActivity)
                         .toList())
                 .build();
@@ -77,6 +79,7 @@ public class ItineraryService {
                 .latitude(activity.getLatitude())
                 .addressLine(activity.getAddressLine())
                 .isCompleted(activity.isCompleted())
+                .title(activity.getTitle())
                 .build();
     }
 

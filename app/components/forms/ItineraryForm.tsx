@@ -6,14 +6,7 @@ import BaseModalBody from "@/libs/components/modal/BaseModalBody";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { useGlobalStore } from "@/store/global-store";
 import { Itinerary } from "@/types/common";
-import {
-    Box,
-    Button,
-    DialogActions,
-    Stack,
-    TextField,
-    Typography,
-} from "@mui/material";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { MapPin, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import TripLocationSearch from "../TripLocationSearch";
@@ -125,7 +118,41 @@ export default function ItineraryForm() {
   }, [itinerary]);
 
   return (
-    <BaseModalBody>
+    <BaseModalBody
+      actions={
+        <>
+          <Button
+            variant="outlined"
+            onClick={closeBdm}
+            sx={{
+              textTransform: "none",
+
+              px: 2,
+              py: 0.5,
+              borderColor: "#ddd",
+              color: "#111827",
+              fontWeight: 500,
+              cursor: "pointer",
+            }}
+          >
+            Hủy
+          </Button>
+
+          <Button
+            variant="contained"
+            onClick={handleSubmit}
+            disabled={destinations.length === 0}
+            sx={{
+              textTransform: "none",
+              background: "#e35c35",
+              "&:hover": { background: "#c94e2d" },
+            }}
+          >
+            Lưu
+          </Button>
+        </>
+      }
+    >
       <Stack direction="column" spacing={2}>
         <TextField
           label="Ghi chú"
@@ -176,36 +203,6 @@ export default function ItineraryForm() {
             ))}
         </Stack>
       </Stack>
-      <DialogActions>
-        <Button
-          variant="outlined"
-          onClick={closeBdm}
-          sx={{
-            textTransform: "none",
-
-            px: 2,
-            py: 0.5,
-            borderColor: "#ddd",
-            color: "#111827",
-            fontWeight: 500,
-            cursor: "pointer",
-          }}
-        >
-          Hủy
-        </Button>
-
-        <Button
-          variant="contained"
-          onClick={handleSubmit}
-          disabled={destinations.length === 0}
-          sx={{
-            background: "#e35c35",
-            "&:hover": { background: "#c94e2d" },
-          }}
-        >
-          Lưu
-        </Button>
-      </DialogActions>
     </BaseModalBody>
   );
 }

@@ -21,4 +21,6 @@ public class ItineraryRequestDto {
 //    private UUID locId;
     private String destination;
     private String destinations;
+    @NotNull(message = "Trường hoạt động (title) không được để trống")
+    private String title;
 }

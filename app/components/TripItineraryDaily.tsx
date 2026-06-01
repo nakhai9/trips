@@ -17,11 +17,13 @@ import {
 } from "lucide-react";
 
 import { useBaseDynamicModal } from "@/libs/components/modal/BaseDynamicModalStore";
-import { BaseModalConfig } from "@/libs/components/modal/BaseModalStore";
-import { ResponseId } from "@/types/api";
-import { useState } from "react";
 import ActivityForm from "./forms/ActivityForm";
 import ItineraryForm from "./forms/ItineraryForm";
+
+type ActionAfterSubmitForm = {
+  name: string;
+  success: boolean;
+};
 
 type TripItineraryDailyProps = {
   itinerary: Itinerary | null;
@@ -30,7 +32,7 @@ type TripItineraryDailyProps = {
   onChange?: (itinerary: Itinerary) => void;
   onAddActivity?: (itinerary: Itinerary) => void;
   onDelete?: (itinerary: Itinerary) => void;
-  afterSubmitForm?: (response: boolean) => void;
+  afterSubmitForm?: (action: ActionAfterSubmitForm) => void;
 };
 
 export default function TripItineraryDaily({
@@ -45,146 +47,15 @@ export default function TripItineraryDaily({
   const { setIsLoading } = useGlobalStore();
   const { openBdm } = useBaseDynamicModal();
 
-  const [isEditingDestination, setIsEditingDestination] = useState(false);
-
-  const [activityModalOpen, setActivityModalOpen] = useState(false);
-
-  const [editingActivity, setEditingActivity] =
-    useState<ItineraryActivity | null>(null);
-
-  const [activityForm, setActivityForm] = useState<Partial<ItineraryActivity>>(
-    {},
-  );
-
-  const [showSearch, setShowSearch] = useState<boolean>(false);
-
-  const hasActivities = (itinerary?.activities?.length ?? 0) > 0;
-
-  const handleAddActivity = () => {
-    setEditingActivity(null);
-
-    setActivityForm({
-      description: "",
-      startTime: "",
-      endTime: "",
-      addressLine: "",
-      isCompleted: false,
-    });
-
-    setActivityModalOpen(true);
-  };
-
-  const handleEditActivity = (activity: ItineraryActivity) => {
-    setEditingActivity(activity);
-
-    setActivityForm({
-      ...activity,
-    });
-
-    setActivityModalOpen(true);
-  };
-
-  const handleActivityFormChange = (form: Partial<ItineraryActivity>) => {
-    setActivityForm(form);
-  };
-
-  const validate = (activity: ItineraryActivity) => {
-    if (!activity.description) {
-      throw new Error("Thêm mô tả cho hoạt động");
-    }
-  };
-
-  const handleActivityFormSubmit = async () => {
-    try {
-      setIsLoading(true);
-
-      // UPDATE
-      if (editingActivity?.id) {
-        const updatedActivity: ItineraryActivity = {
-          ...editingActivity,
-          ...activityForm,
-        };
-
-        validate(updatedActivity);
-
-        await HttpClient.put(
-          `${API_URLS.activities}/${editingActivity.id}`,
-          updatedActivity,
-        );
-      }
-
-      // CREATE
-      else {
-        const newActivity: ItineraryActivity = {
-          ...activityForm,
-          sequence: (itinerary?.activities?.length ?? 0) + 1,
-          itineraryId: itinerary?.id,
-        } as ItineraryActivity;
-
-        validate(newActivity);
-
-        await HttpClient.post<ItineraryActivity>(
-          API_URLS.activities,
-          newActivity,
-        );
-      }
-
-      setActivityModalOpen(false);
-      setEditingActivity(null);
-
-      afterSubmitForm?.(true);
-    } catch (err: any) {
-      showError(err?.message || "Không thể lưu hoạt động");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDeleteSchedule = () => {
-    if (!itinerary) return;
-    onDelete?.(itinerary);
-  };
-
   const handleDeleteActivity = async (activity: ItineraryActivity) => {
     try {
       setIsLoading(true);
 
       await HttpClient.delete(`${API_URLS.activities}/${activity.id}`);
 
-      afterSubmitForm?.(true);
+      afterSubmitForm?.({ name: "activity", success: true });
     } catch (err: any) {
       showError(err?.message || "Không thể xóa hoạt động");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleOpenModal = (modalConfig: BaseModalConfig) => {
-    // open(modalConfig);
-  };
-
-  const handleSaveDestinationOfDay = async (itinerary: Itinerary) => {
-    setIsLoading(true);
-    try {
-      console.log(itinerary);
-
-      const { location, activities, ...rest } = itinerary;
-
-      if (itinerary.id) {
-        const data = await HttpClient.put<ResponseId>(
-          `${API_URLS.itineraries}/${itinerary.id}`,
-          {
-            ...rest,
-          },
-        );
-      } else {
-        const data = await HttpClient.post<ResponseId>(API_URLS.itineraries, {
-          ...rest,
-        });
-      }
-      showSuccess("Lưu thành công");
-    } catch (error) {
-      showError(error);
     } finally {
       setIsLoading(false);
     }
@@ -221,7 +92,7 @@ export default function TripItineraryDaily({
                   },
                   onSuccess: (success) => {
                     if (!success) return;
-                    afterSubmitForm?.(true);
+                    afterSubmitForm?.({ name: "itinerary", success: true });
                   },
                 });
               }}
@@ -234,7 +105,7 @@ export default function TripItineraryDaily({
               <Box
                 key={d.trim() + idx}
                 sx={{
-                  border: "1px solid #ddd",
+                  border: "1px solid #334155",
                   borderRadius: 5,
                   px: 2,
                   py: 1,
@@ -253,10 +124,10 @@ export default function TripItineraryDaily({
       )}
 
       {itinerary?.activities && itinerary.activities.length > 0 && (
-        <Stack direction="column">
+        <Stack direction="column" mt={3}>
           {itinerary.activities?.map((act, index) => (
             <Box key={act.id || index}>
-              <Box sx={{ border: "1px solid #ddd", p: 1, borderRadius: 2 }}>
+              <Box sx={{ border: "1px solid #334155", p: 1, borderRadius: 2 }}>
                 <Stack direction="row" alignItems="center" spacing={1.5}>
                   <Box
                     component="div"
@@ -284,7 +155,7 @@ export default function TripItineraryDaily({
                         lineHeight: 1.6,
                       }}
                     >
-                      {act.description}
+                      {act.title}
                     </Typography>
 
                     {act.isCompleted ? (
@@ -310,10 +181,24 @@ export default function TripItineraryDaily({
                       <Stack direction="row">
                         <IconButton
                           type="button"
-                          onClick={() => {
-                            setActivityModalOpen(true);
+                          onClick={async () => {
+                            const formData = await openBdm(
+                              <ActivityForm />,
 
-                            setActivityForm(act);
+                              {
+                                title: "Hoạt động",
+                                formData: {
+                                  id: act?.id,
+                                },
+                                onSuccess: (success) => {
+                                  if (!success) return;
+                                  afterSubmitForm?.({
+                                    name: "activity",
+                                    success: true,
+                                  });
+                                },
+                              },
+                            );
                           }}
                           sx={{
                             "&:hover": {
@@ -340,14 +225,18 @@ export default function TripItineraryDaily({
                 </Stack>
               </Box>
               <Box
-                sx={{ borderLeft: "1px dashed #ddd", minHeight: 28, ml: 3 }}
+                className="activity-connector"
+                sx={{
+                  borderLeft: `2px dashed ${act.isCompleted ? "#e35c35" : "#334155"}`,
+                  minHeight: 28,
+                  ml: 3,
+                }}
               ></Box>
             </Box>
           ))}
 
           <Button
             size="small"
-            onClick={handleAddActivity}
             sx={{
               borderColor: "#e35c35",
               color: "#e35c35",
@@ -365,6 +254,22 @@ export default function TripItineraryDaily({
             }}
             startIcon={<Plus size={18} />}
             variant="outlined"
+            onClick={async () => {
+              const formData = await openBdm(
+                <ActivityForm />,
+
+                {
+                  title: "Hoạt động",
+                  formData: {
+                    itineraryId: itinerary?.id,
+                  },
+                  onSuccess: (success) => {
+                    if (!success) return;
+                    afterSubmitForm?.({ name: "activity", success: true });
+                  },
+                },
+              );
+            }}
           >
             <span>Thêm hoạt động</span>
           </Button>
@@ -405,13 +310,17 @@ export default function TripItineraryDaily({
             size="small"
             onClick={async () => {
               const formData = await openBdm(
-                <ActivityForm
-                  initial={activityForm}
-                  onChange={handleActivityFormChange}
-                />,
+                <ActivityForm />,
 
                 {
-                  title: "Thêm hoạt động",
+                  title: "Hoạt động",
+                  formData: {
+                    itineraryId: itinerary?.id,
+                  },
+                  onSuccess: (success) => {
+                    if (!success) return;
+                    afterSubmitForm?.({ name: "activity", success: true });
+                  },
                 },
               );
             }}

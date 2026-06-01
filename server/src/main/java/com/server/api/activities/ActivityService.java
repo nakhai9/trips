@@ -21,6 +21,12 @@ public class ActivityService {
     private final ActivityRepository activityRepo;
     private final ItineraryRepository itineraryRepo;
 
+    public ActivityResponseDto get(UUID id) {
+        Activity activity = activityRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hoạt động với id: " + id));
+        return mapToResponse(activity);
+    }
+
     public List<ActivityResponseDto> list() {
         return DtoMapper.mapList(activityRepo.findAll(), this::mapToResponse);
     }
