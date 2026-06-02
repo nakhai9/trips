@@ -1,5 +1,6 @@
 "use client";
-import { Box, Button, Container, Typography } from "@mui/material";
+import { Box, Button, Container, Link, Typography } from "@mui/material";
+import { Github } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -13,40 +14,51 @@ export default function Home() {
         color: "#334155",
       }}
     >
-      <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            alignItems: "center",
-            justifyContent: "space-between",
-            mb: 12,
-            gap: { xs: 6, md: 0 },
-          }}
-        >
+      <Box
+        sx={{
+          minHeight: { xs: "auto", md: "100vh" },
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundImage:
+            "url('https://sondoongcave.info/wp-content/uploads/2022/03/11_1500x1000__637159498072509710.webp')",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Container maxWidth="lg" sx={{ py: 8 }}>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography
-              component="h1"
+            <Box
               sx={{
-                fontWeight: 900,
-                fontSize: { xs: 36, md: 54 },
-                lineHeight: 1.1,
-                mb: 2,
-                color: "#e35c35",
+                width: {
+                  xs: "100%",
+                  md: 480,
+                },
               }}
             >
-              <Box
-                component="span"
+              <Typography
+                component="h1"
                 sx={{
-                  color: "#334155",
-                  fontStyle: "italic",
-                  fontWeight: 600,
+                  fontWeight: 900,
+                  fontSize: { xs: 36, md: 54 },
+                  lineHeight: 1.1,
+                  mb: 2,
+                  color: "#e35c35",
+                  textShadow: `2px 2px 0 rgba(0,0,0,0.9)`,
                 }}
               >
-                Tạo lịch trình dễ dàng cho những chuyến đi với{" "}
-              </Box>
-              Trips
-            </Typography>
+                <Box
+                  component="span"
+                  sx={{
+                    color: "#F8F8FF",
+                    fontStyle: "italic",
+                    fontWeight: 600,
+                  }}
+                >
+                  Tạo lịch trình dễ dàng cho những chuyến đi với{" "}
+                </Box>
+                Trips
+              </Typography>
+            </Box>
 
             <Box sx={{ display: "flex", gap: 2 }}>
               <Button
@@ -58,7 +70,7 @@ export default function Home() {
                   fontSize: 18,
                   px: 4,
                   py: 1,
-                  borderRadius: 2,
+                  borderRadius: "50px",
                   textTransform: "none",
                   boxShadow: "0 2px 12px #e35c3530",
                   "&:hover": { background: "#c94e2d" },
@@ -69,36 +81,9 @@ export default function Home() {
               </Button>
             </Box>
           </Box>
-          <Box
-            sx={{
-              flex: 1,
-              minWidth: 0,
-              display: "flex",
-              justifyContent: "center",
-              mt: { xs: 6, md: 0 },
-            }}
-          >
-            <Box
-              sx={{
-                width: { xs: "100%", md: 420 },
-                maxWidth: 480,
-                borderRadius: 4,
-                boxShadow: "0 8px 32px #e35c3520",
-                overflow: "hidden",
-                background: "#fff",
-                p: 0,
-              }}
-            >
-              <Box
-                component="img"
-                src="/trip-2.jpg"
-                alt="Trip 2"
-                sx={{ width: "100%", objectFit: "cover" }}
-              />
-            </Box>
-          </Box>
-        </Box>
-
+        </Container>
+      </Box>
+      <Container maxWidth="lg" sx={{ py: 8 }}>
         <Box
           sx={{
             display: "flex",
@@ -164,6 +149,48 @@ export default function Home() {
               }}
             />
           </Box>
+        </Box>
+      </Container>
+      <Container maxWidth="lg">
+        <Box
+          component="footer"
+          sx={{
+            borderTop: "1px solid #ddd",
+            py: 2,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 1,
+          }}
+        >
+          <Typography
+            variant="caption"
+            sx={{
+              color: "#334155",
+              opacity: 0.8,
+              letterSpacing: 0.5,
+            }}
+          >
+            Built with Next.js, Spring Boot, Material UI, and Leaflet. © 2025
+          </Typography>
+
+          <Link
+            href="https://github.com/your-username/your-repo"
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="hover"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 0.75,
+              color: "#334155",
+              fontSize: 10,
+            }}
+          >
+            <Github size={14} />
+            View Source
+          </Link>
         </Box>
       </Container>
     </div>
