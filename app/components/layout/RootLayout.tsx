@@ -10,9 +10,11 @@ import {
   Box,
   CircularProgress,
   Container,
+  Link,
   Stack,
   Typography,
 } from "@mui/material";
+import { Github } from "lucide-react";
 
 type RootLayoutProps = {
   children: React.ReactNode;
@@ -26,7 +28,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <Box
       sx={{
-        backgroundColor: "#FFFDF3",
+        backgroundColor: "#FFFFFF",
         position: "relative",
         display: "flex",
         flexDirection: "column",
@@ -49,6 +51,47 @@ export default function RootLayout({ children }: RootLayoutProps) {
           }}
         >
           {children}
+          <Box
+            component="footer"
+            sx={{
+              borderTop: "1px solid #ddd",
+              py: 2,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 1,
+              mt: 2,
+            }}
+          >
+            <Typography
+              variant="caption"
+              sx={{
+                color: "#334155",
+                opacity: 0.8,
+                letterSpacing: 0.5,
+              }}
+            >
+              Built with Next.js, Spring Boot, Material UI, and Leaflet. © 2025
+            </Typography>
+
+            <Link
+              href="https://github.com/your-username/your-repo"
+              target="_blank"
+              rel="noopener noreferrer"
+              underline="hover"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                color: "#334155",
+                fontSize: 10,
+              }}
+            >
+              <Github size={14} />
+              View Source
+            </Link>
+          </Box>
         </Container>
       </Box>
       <BaseToast

@@ -157,21 +157,18 @@ export const theme = createTheme({
         {
           props: { size: "large" },
           style: {
-            width: 300,
             height: 60,
           },
         },
         {
           props: { size: "medium" },
           style: {
-            width: 220,
             height: 50,
           },
         },
         {
           props: { size: "small" },
           style: {
-            width: 140,
             height: 40,
           },
         },

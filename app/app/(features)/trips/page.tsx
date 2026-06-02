@@ -3,7 +3,7 @@
 import RootLayout from "@/components/layout/RootLayout";
 import TripsCard from "@/components/ui/TripsCard";
 import TripsDateRangePicker, {
-    TripsDateRangePickerProps,
+  TripsDateRangePickerProps,
 } from "@/components/ui/TripsDateRangePicker";
 import { API_URLS } from "@/libs/api/api.constant";
 import { HttpClient } from "@/libs/api/http";
@@ -13,13 +13,13 @@ import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { useGlobalStore } from "@/store/global-store";
 import { ResponseId } from "@/types/api";
 import {
-    Box,
-    Button,
-    FormControlLabel,
-    Grid,
-    Stack,
-    Switch,
-    Typography,
+  Box,
+  Button,
+  FormControlLabel,
+  Grid,
+  Stack,
+  Switch,
+  Typography,
 } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { Plus } from "lucide-react";
@@ -164,19 +164,35 @@ export default function TripPage() {
     <>
       <RootLayout>
         <Stack direction="column" spacing={2}>
-          <Box sx={{ pt: 2 }}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
+          <Stack
+            direction="column"
+            alignItems="center"
+            spacing={1}
+            sx={{ py: 4 }}
+          >
+            <Typography
+              variant="h2"
+              sx={{
+                color: "#334155",
+                fontWeight: 500,
+                letterSpacing: 1.2,
+                textAlign: "center",
+              }}
             >
-              <Typography
-                variant="h4"
-                sx={{ color: "#334155", fontWeight: 600, letterSpacing: 1.2 }}
-              >
-                Lịch trình
-              </Typography>
-
+              Bắt đầu từ một ý tưởng có sẵn
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "#334155",
+                fontWeight: 500,
+                letterSpacing: 1.2,
+                textAlign: "center",
+              }}
+            >
+              hoặc
+            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Button
                 variant="contained"
                 size="small"
@@ -195,10 +211,10 @@ export default function TripPage() {
                 startIcon={<Plus size={16} />}
                 onClick={() => setIsOpen(!isOpen)}
               >
-                Lịch trình mới
+                Tạo hành trình mới cho riêng bạn
               </Button>
-            </Stack>
-          </Box>
+            </Box>
+          </Stack>
 
           {!trips.length && (
             <Box
