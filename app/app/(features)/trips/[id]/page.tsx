@@ -50,7 +50,7 @@ function useFetchTrip() {
     try {
       setLoading(true);
       setIsLoading(true);
-      const data = await HttpClient.get<Trip>(`${API_URLS.plan}/${tripID}`);
+      const data = await HttpClient.post<Trip>(`${API_URLS.plan}/${tripID}`);
       setTrip(data);
     } catch (err: any) {
       setError(err.message);

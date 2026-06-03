@@ -2,9 +2,10 @@ package com.server.api.plans.controller;
 
 import java.util.UUID;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.api.plans.PlanService;
@@ -21,8 +22,8 @@ import lombok.RequiredArgsConstructor;
 public class GetPlanController {
     private final PlanService planService;
 
-    @GetMapping("/{id}")
-    public BaseApiResponse<PlanResponseDto> get(@PathVariable UUID id) {
-        return BaseApiResponse.success(planService.get(id));
+    @PostMapping("/{id}")
+    public BaseApiResponse<PlanResponseDto> get(@PathVariable UUID id, @RequestParam(value = "accessCode", required = false) String accessCode) {
+        return BaseApiResponse.success(planService.get(id, accessCode));
     }
 }

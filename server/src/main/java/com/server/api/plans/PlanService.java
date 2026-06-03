@@ -1,5 +1,6 @@
 package com.server.api.plans;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -52,13 +53,16 @@ public class PlanService {
         return planRepository
                 .findAll()
                 .stream()
+                .sorted(Comparator.comparing(Plan::getCreatedAt).reversed())
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-    public PlanResponseDto get(UUID id) {
+    public PlanResponseDto get(UUID id, String accessCode) {
         Plan plan = planRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy plan theo Id" + id));
-        return mapToResponse(plan);
+        boolean canView = plan.isPublic() || (plan.getAccessCode() != null && plan.getAccessCode().equals(accessCode));
+            
+        return mapToResponse(plan, canView);
     }
 
     public PlanResponseDto update(UUID id, PlanRequestDto request) {
@@ -81,8 +85,18 @@ public class PlanService {
                 .title(plan.getTitle())
                 .startDate(plan.getStartDate())
                 .endDate(plan.getEndDate())
-                .canView(true)
-                .accessCode(plan.getAccessCode())
+                // .accessCode(plan.getAccessCode())
+                .isPublic(plan.isPublic())
+                .build();
+    }
+
+     private PlanResponseDto mapToResponse(Plan plan, boolean canView) {
+        return PlanResponseDto.builder()
+                .id(plan.getId())
+                .title(plan.getTitle())
+                .startDate(plan.getStartDate())
+                .endDate(plan.getEndDate())
+                .canView(canView)
                 .isPublic(plan.isPublic())
                 .build();
     }

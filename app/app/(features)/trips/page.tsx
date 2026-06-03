@@ -98,7 +98,7 @@ export default function TripPage() {
       const payload = {
         title: trip.title,
         description: "trip.description",
-        isPublic: trip.isPublic,
+        isPublic: trip.accessCode ? false : trip.isPublic,
         accessCode: trip.accessCode,
         startDate: dayjs(trip.startDate).toISOString(),
         endDate: dayjs(trip.endDate).toISOString(),

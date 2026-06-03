@@ -17,7 +17,7 @@ public class PlanResponseDto {
     private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private String accessCode;
+    // private String accessCode;
     private boolean canView;
     @JsonProperty("isPublic")
     private Boolean isPublic;
