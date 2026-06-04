@@ -1,4 +1,5 @@
 "use client";
+import TopToolbar from "@/components/layout/TopToolbar";
 import { Box, Button, Container, Link, Typography } from "@mui/material";
 import { Github } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -12,19 +13,22 @@ export default function Home() {
         background: "#f8f5f1",
         minHeight: "100vh",
         color: "#334155",
+        position: "relative",
       }}
     >
       <Box
         sx={{
           minHeight: { xs: "auto", md: "700px" },
-          backgroundSize: "fit",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
           backgroundImage:
-            "url('https://sondoongcave.info/wp-content/uploads/2022/03/11_1500x1000__637159498072509710.webp')",
+            "url('https://urszihlmann.com/images/son-doong/Vietnam-SonDoong-Dinosaurs-Portrait_1778.jpg')",
           display: "flex",
           alignItems: "center",
         }}
       >
+        <TopToolbar background="ghost" />
         <Container maxWidth="lg" sx={{ py: 8 }}>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Box
@@ -63,11 +67,12 @@ export default function Home() {
             <Box sx={{ display: "flex", gap: 2 }}>
               <Button
                 variant="contained"
+                size="small"
                 sx={{
                   background: "#e35c35",
                   color: "#fff",
                   fontWeight: 500,
-                  fontSize: 18,
+                  fontSize: 14,
                   px: 4,
                   py: 1,
                   borderRadius: "50px",

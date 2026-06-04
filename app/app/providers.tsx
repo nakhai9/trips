@@ -125,6 +125,7 @@ export const theme = createTheme({
           borderRadius: 4,
           minHeight: 40,
           boxShadow: "none",
+          letterSpacing: 1,
         },
 
         containedPrimary: {

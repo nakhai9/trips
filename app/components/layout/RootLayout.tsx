@@ -4,18 +4,17 @@ import BaseDynamicModal from "@/libs/components/modal/BaseDynamicModal";
 import { useBaseModal } from "@/libs/components/modal/BaseModalStore";
 import BaseToast from "@/libs/components/toast/BaseToast";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
-import { GithubIcon } from "@/libs/icons";
 import { useGlobalStore } from "@/store/global-store";
 import {
   Backdrop,
   Box,
-  Button,
   CircularProgress,
   Container,
   Stack,
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
+import TopToolbar from "./TopToolbar";
 
 type RootLayoutProps = {
   children: React.ReactNode;
@@ -39,62 +38,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       }}
     >
       <Box component="main" sx={{ flex: 1, position: "relative" }}>
-        <Box
-          sx={{
-            flex: 1,
-            position: "fixed",
-            top: 0,
-            zIndex: 9999,
-            left: 0,
-            width: "100%",
-            background: "#ffffff",
-          }}
-        >
-          <Container
-            maxWidth={false}
-            sx={{
-              maxWidth: { ...LAYOUT_WIDTH_RESPONSIVE },
-              mx: "auto",
-              width: "100%",
-              px: {
-                xs: 2,
-                md: 0,
-                lg: 0,
-              },
-            }}
-          >
-            <Box
-              sx={{
-                height: {
-                  xs: 48,
-                  md: 56,
-                },
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "end",
-              }}
-            >
-              <Stack>
-                <Button
-                  type="button"
-                  startIcon={<GithubIcon />}
-                  onClick={() => router.push("/source-and-api")}
-                >
-                  Source & API
-                </Button>
-              </Stack>
-            </Box>
-          </Container>
-        </Box>
-        <Box
-          className="toolbar-spacer"
-          sx={{
-            height: {
-              xs: 48,
-              md: 56,
-            },
-          }}
-        ></Box>
+        <TopToolbar />
 
         <Container
           maxWidth={false}
