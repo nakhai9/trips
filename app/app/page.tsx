@@ -16,8 +16,8 @@ export default function Home() {
     >
       <Box
         sx={{
-          minHeight: { xs: "auto", md: "100vh" },
-          backgroundSize: "cover",
+          minHeight: { xs: "auto", md: "700px" },
+          backgroundSize: "fit",
           backgroundPosition: "center",
           backgroundImage:
             "url('https://sondoongcave.info/wp-content/uploads/2022/03/11_1500x1000__637159498072509710.webp')",

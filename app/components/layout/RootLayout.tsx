@@ -4,23 +4,25 @@ import BaseDynamicModal from "@/libs/components/modal/BaseDynamicModal";
 import { useBaseModal } from "@/libs/components/modal/BaseModalStore";
 import BaseToast from "@/libs/components/toast/BaseToast";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
+import { GithubIcon } from "@/libs/icons";
 import { useGlobalStore } from "@/store/global-store";
 import {
   Backdrop,
   Box,
+  Button,
   CircularProgress,
   Container,
-  Link,
   Stack,
   Typography,
 } from "@mui/material";
-import { Github } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type RootLayoutProps = {
   children: React.ReactNode;
 };
 
 export default function RootLayout({ children }: RootLayoutProps) {
+  const router = useRouter();
   const { isLoading, loadingMessage, setIsLoading } = useGlobalStore();
   const { message, isShow, type, hideToast } = useToast();
   const { isOpen, content: component, config, close } = useBaseModal();
@@ -36,7 +38,64 @@ export default function RootLayout({ children }: RootLayoutProps) {
         fontFamily: "inherit",
       }}
     >
-      <Box component="main" sx={{ flex: 1 }}>
+      <Box component="main" sx={{ flex: 1, position: "relative" }}>
+        <Box
+          sx={{
+            flex: 1,
+            position: "fixed",
+            top: 0,
+            zIndex: 9999,
+            left: 0,
+            width: "100%",
+            background: "#ffffff",
+          }}
+        >
+          <Container
+            maxWidth={false}
+            sx={{
+              maxWidth: { ...LAYOUT_WIDTH_RESPONSIVE },
+              mx: "auto",
+              width: "100%",
+              px: {
+                xs: 2,
+                md: 0,
+                lg: 0,
+              },
+            }}
+          >
+            <Box
+              sx={{
+                height: {
+                  xs: 48,
+                  md: 56,
+                },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "end",
+              }}
+            >
+              <Stack>
+                <Button
+                  type="button"
+                  startIcon={<GithubIcon />}
+                  onClick={() => router.push("/source-and-api")}
+                >
+                  Source & API
+                </Button>
+              </Stack>
+            </Box>
+          </Container>
+        </Box>
+        <Box
+          className="toolbar-spacer"
+          sx={{
+            height: {
+              xs: 48,
+              md: 56,
+            },
+          }}
+        ></Box>
+
         <Container
           maxWidth={false}
           sx={{
@@ -74,23 +133,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
             >
               Built with Next.js, Spring Boot, Material UI, and Leaflet. © 2025
             </Typography>
-
-            <Link
-              href="https://github.com/your-username/your-repo"
-              target="_blank"
-              rel="noopener noreferrer"
-              underline="hover"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 0.5,
-                color: "#334155",
-                fontSize: 10,
-              }}
-            >
-              <Github size={14} />
-              View Source
-            </Link>
           </Box>
         </Container>
       </Box>

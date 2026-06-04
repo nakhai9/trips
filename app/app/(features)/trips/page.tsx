@@ -158,7 +158,7 @@ export default function TripPage() {
 
   useEffect(() => {
     onLoadTrips();
-  }, [onLoadTrips]);
+  }, []);
 
   return (
     <>
