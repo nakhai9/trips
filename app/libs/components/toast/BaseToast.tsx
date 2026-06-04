@@ -22,7 +22,9 @@ export default function BaseToast({
       autoHideDuration={3000}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
       onClose={onClose}
-      sx={{}}
+      sx={{
+        zIndex: 9999,
+      }}
     >
       <Alert severity={type} variant="filled" sx={{ width: "100%" }}>
         {message}

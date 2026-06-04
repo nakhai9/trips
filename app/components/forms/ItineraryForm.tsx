@@ -123,12 +123,11 @@ export default function ItineraryForm() {
         <>
           <Button
             variant="outlined"
+            size="small"
             onClick={closeBdm}
             sx={{
               textTransform: "none",
 
-              px: 2,
-              py: 0.5,
               borderColor: "#ddd",
               color: "#111827",
               fontWeight: 500,
@@ -140,6 +139,7 @@ export default function ItineraryForm() {
 
           <Button
             variant="contained"
+            size="small"
             onClick={handleSubmit}
             disabled={destinations.length === 0}
             sx={{

@@ -18,6 +18,7 @@ import {
   Stack,
   Tab,
   Tabs,
+  TextField,
   Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
@@ -25,6 +26,7 @@ import {
   CalendarClock,
   ChevronLeft,
   ChevronRight,
+  Lock,
   Settings,
   Share2,
 } from "lucide-react";
@@ -46,11 +48,13 @@ function useFetchTrip() {
   const [error, setError] = useState<string | null>(null);
   const { setIsLoading } = useGlobalStore();
 
-  const fetchTrip = useCallback(async (tripID: string) => {
+  const fetchTrip = useCallback(async (tripID: string, accessCode?: string) => {
     try {
       setLoading(true);
       setIsLoading(true);
-      const data = await HttpClient.post<Trip>(`${API_URLS.plan}/${tripID}`);
+      const data = await HttpClient.post<Trip>(`${API_URLS.plan}/${tripID}`, {
+        accessCode,
+      });
       setTrip(data);
     } catch (err: any) {
       setError(err.message);
@@ -101,6 +105,7 @@ export default function TripDetailPage() {
   } = useFetchItineraries();
   const { showError, showSuccess } = useToast();
   const { setIsLoading } = useGlobalStore();
+  const [accessCode, setAccessCode] = useState<string>("");
 
   const [currentDay, setCurrentDay] = useState<number>(1);
 
@@ -130,6 +135,18 @@ export default function TripDetailPage() {
     fetchTrip(tripID);
     fetchItineraries(tripID);
   }, [tripID]);
+
+  const handleSubmitCode = async () => {
+    try {
+      await Promise.all([
+        fetchTrip(tripID, accessCode),
+        fetchItineraries(tripID),
+      ]);
+      showSuccess("Mã truy cập hợp lệ");
+    } catch (error) {
+      showError("Mã truy cập không hợp lệ");
+    }
+  };
 
   const selectedItinerary = useMemo(() => {
     return itineraries.find((x) => x.dayNumber === currentDay) || null;
@@ -198,10 +215,10 @@ export default function TripDetailPage() {
           >
             {trip && (
               <Paper
-                elevation={2}
+                elevation={1}
                 className="nak-detail-wrapper"
                 sx={{
-                  minHeight: "100vh",
+                  my: 4,
                 }}
               >
                 <Stack direction="column" spacing={2}>
@@ -398,7 +415,63 @@ export default function TripDetailPage() {
                       </>
                     )}
 
-                    {value === 2 && (
+                    {value === 1 && !trip.canView && (
+                      <Box
+                        sx={{
+                          textAlign: "center",
+                          py: 6,
+                          px: 3,
+                          borderRadius: 3,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            mb: 2,
+                          }}
+                        >
+                          <Lock size={30} />
+                        </Box>
+                        <Typography variant="h6" gutterBottom fontWeight={500}>
+                          Đây là lịch trình riêng tư
+                        </Typography>
+
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mb: 2 }}
+                        >
+                          Nhập mã truy cập để xem lịch trình này
+                        </Typography>
+
+                        <Box sx={{ maxWidth: 360, mx: "auto" }}>
+                          <TextField
+                            fullWidth
+                            label="Mã truy cập"
+                            placeholder=""
+                            // value={accessCode}
+                            onChange={(e) => setAccessCode(e.target.value)}
+                            variant="outlined"
+                            sx={{ mb: 2 }}
+                            size="small"
+                            type="password"
+                          />
+
+                          <Button
+                            fullWidth
+                            variant="contained"
+                            size="small"
+                            onClick={handleSubmitCode}
+                            disabled={!accessCode.trim()}
+                          >
+                            Xác nhận mã truy cập
+                          </Button>
+                        </Box>
+                      </Box>
+                    )}
+
+                    {value === 2 && trip.canView && (
                       <>
                         <Box
                           component="div"
@@ -433,6 +506,30 @@ export default function TripDetailPage() {
                           Bản đồ các địa điểm trong lịch trình
                         </Typography>
                       </>
+                    )}
+
+                    {value === 2 && !trip.canView && (
+                      <Box
+                        sx={{
+                          textAlign: "center",
+                          py: 6,
+                          px: 3,
+                          borderRadius: 3,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            mb: 2,
+                          }}
+                        >
+                          <Lock size={30} />
+                        </Box>
+                        <Typography variant="h6" gutterBottom fontWeight={500}>
+                          Đây là lịch trình riêng tư
+                        </Typography>
+                      </Box>
                     )}
                   </Box>
                 </Stack>

@@ -16,7 +16,7 @@ export default function TopToolbar({ background }: TopToolbarProps) {
           flex: 1,
           position: "fixed",
           top: 0,
-          zIndex: 9999,
+          zIndex: 10,
           left: 0,
           width: "100%",
           background: background ? background : "white",

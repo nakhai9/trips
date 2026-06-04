@@ -135,11 +135,9 @@ export default function ActivityForm({}: ActivityFormProps) {
           <Button
             variant="outlined"
             onClick={closeBdm}
+            size="small"
             sx={{
               textTransform: "none",
-
-              px: 2,
-              py: 0.5,
               borderColor: "#ddd",
               color: "#111827",
               fontWeight: 500,
@@ -151,6 +149,7 @@ export default function ActivityForm({}: ActivityFormProps) {
 
           <Button
             variant="contained"
+            size="small"
             onClick={handleSubmit}
             sx={{
               background: "#e35c35",

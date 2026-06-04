@@ -59,9 +59,13 @@ public class PlanService {
     }
 
     public PlanResponseDto get(UUID id, String accessCode) {
-        Plan plan = planRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy plan theo Id" + id));
+        Plan plan = planRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy plan theo Id " + id));
         boolean canView = plan.isPublic() || (plan.getAccessCode() != null && plan.getAccessCode().equals(accessCode));
-            
+
+        if (!canView) {
+            throw new RuntimeException("Mã truy cập không hợp lệ");
+        }
+
         return mapToResponse(plan, canView);
     }
 
