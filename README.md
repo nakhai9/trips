@@ -1,6 +1,22 @@
-# Trips 
+# Trips - Travel Planning Platform
 
 Trips là nền tảng xây dựng, quản lý và chia sẻ hành trình du lịch được phát triển bằng **Next.js**, **Spring Boot** và **Material UI**.
+
+## Demo
+
+### Website
+
+https://trips-wheat.vercel.app/
+
+### Swagger API
+
+https://trips-1741.onrender.com/swagger-ui/index.html
+
+### Source Code
+
+https://github.com/nakhai9/trips
+
+---
 
 ## Giới thiệu
 
@@ -75,7 +91,7 @@ Dự án được xây dựng nhằm thực hành:
 | Database      | MySQL, JPA, Hibernate                   |
 | Documentation | Swagger OpenAPI                         |
 | Maps          | Leaflet                                 |
-| Deployment    | Render                                  |
+| Deployment    | Vercel, Render                          |
 
 ---
 
