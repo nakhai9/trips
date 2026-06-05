@@ -1,7 +1,6 @@
 "use client";
 import { LAYOUT_WIDTH_RESPONSIVE } from "@/app/providers";
 import BaseDynamicModal from "@/libs/components/modal/BaseDynamicModal";
-import { useBaseModal } from "@/libs/components/modal/BaseModalStore";
 import BaseToast from "@/libs/components/toast/BaseToast";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { useGlobalStore } from "@/store/global-store";
@@ -24,7 +23,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
   const router = useRouter();
   const { isLoading, loadingMessage, setIsLoading } = useGlobalStore();
   const { message, isShow, type, hideToast } = useToast();
-  const { isOpen, content: component, config, close } = useBaseModal();
 
   return (
     <Box
@@ -86,17 +84,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
         type={type}
         onClose={hideToast}
       />
-      {/* {isOpen && component && (
-        <BaseModal
-          open={isOpen}
-          onClose={close}
-          title={config?.title}
-          maxWidth={config?.maxWidth || "sm"}
-          actions={config?.actions}
-        >
-          {component}
-        </BaseModal>
-      )} */}
 
       <Backdrop sx={{ zIndex: 9999, background: "#fff" }} open={isLoading}>
         <Stack alignItems="center" spacing={2}>

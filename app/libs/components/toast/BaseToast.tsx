@@ -19,7 +19,7 @@ export default function BaseToast({
   return (
     <Snackbar
       open={isShow}
-      autoHideDuration={3000}
+      autoHideDuration={2000}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
       onClose={onClose}
       sx={{
