@@ -6,7 +6,6 @@ import { API_URLS } from "@/libs/api/api.constant";
 import { HttpClient } from "@/libs/api/http";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { useGlobalStore } from "@/store/global-store";
-import { ResponseId } from "@/types/api";
 import { Itinerary, Trip } from "@/types/common";
 import {
   Box,
@@ -98,22 +97,12 @@ export default function TripDetailPage() {
   const params = useParams();
   const tripID = params?.id as string;
   const router = useRouter();
-  const { trip, loading: tripLoading, fetchTrip } = useFetchTrip();
-  const {
-    itineraries,
-    loading: itineraryLoading,
-    fetchItineraries,
-    setItineraries,
-  } = useFetchItineraries();
+  const { trip, fetchTrip } = useFetchTrip();
+  const { itineraries, fetchItineraries } = useFetchItineraries();
   const { showError, showSuccess } = useToast();
-  const { setIsLoading } = useGlobalStore();
   const [accessCode, setAccessCode] = useState<string>("");
 
   const [currentDay, setCurrentDay] = useState<number>(1);
-
-  // Modal
-  const [isOpen, setIsOpen] = useState(false);
-  // End modal
 
   const [value, setValue] = useState(1);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
@@ -161,49 +150,8 @@ export default function TripDetailPage() {
     return itineraries.find((x) => x.dayNumber === currentDay) || null;
   }, [currentDay, itineraries]);
 
-  const validate = () => {};
-
-  const handleAutoSave = async (itinerary: Itinerary) => {
-    setIsLoading(true);
-    try {
-      console.log(itinerary);
-
-      const { location, activities, ...rest } = itinerary;
-
-      if (itinerary.id) {
-        const data = await HttpClient.put<ResponseId>(
-          `${API_URLS.itineraries}/${itinerary.id}`,
-          {
-            ...rest,
-          },
-        );
-      } else {
-        const data = await HttpClient.post<ResponseId>(API_URLS.itineraries, {
-          ...rest,
-        });
-      }
-
-      await fetchItineraries(tripID);
-      showSuccess("Lưu thành công");
-    } catch (error) {
-      showError(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleAutoDelete = async (event: Itinerary) => {
-    try {
-      const data = await HttpClient.delete<ResponseId>(
-        `${API_URLS.itineraries}/${event.id}`,
-      );
-      if (data) {
-        showSuccess("Đã xóa thành công");
-        await fetchItineraries(tripID);
-      }
-    } catch (error) {
-      showError(error);
-    }
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(`${window.location.origin}/trips/${tripID}`);
   };
 
   return (
@@ -265,6 +213,7 @@ export default function TripDetailPage() {
                         <IconButton
                           aria-label="share"
                           sx={{ color: "#1a2530" }}
+                          onClick={copyToClipboard}
                         >
                           <Share2 size={16} />
                         </IconButton>
