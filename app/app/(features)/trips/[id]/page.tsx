@@ -93,7 +93,7 @@ export default function TripDetailPage() {
   const params = useParams();
   const tripID = params?.id as string;
   const router = useRouter();
-  const { openBdm } = useBaseDynamicModal();
+  const { openBdm, modalEvent, setModalEvent } = useBaseDynamicModal();
   const { trip, fetchTrip } = useFetchTrip();
   const { itineraries, fetchItineraries } = useFetchItineraries();
   const { showError, showSuccess } = useToast();
@@ -157,6 +157,13 @@ export default function TripDetailPage() {
       formData: { id: tripID, reloadFn: () => fetchTrip(tripID) },
     });
   };
+
+  useEffect(() => {
+    if (modalEvent?.type === "resolve" && modalEvent.name === "activity") {
+      fetchItineraries(tripID);
+      setModalEvent(null);
+    }
+  }, [modalEvent, setModalEvent]);
 
   return (
     <>

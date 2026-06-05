@@ -15,16 +15,19 @@ export default function TripActivitySection({
   itineraryId,
   activities = [],
 }: TripActivitySectionProps) {
-  const { openBdm } = useBaseDynamicModal();
+  const { openBdm, setModalEvent } = useBaseDynamicModal();
   const { showError } = useToast();
   const handleDeleteActivity = async (activity: ItineraryActivity) => {
     try {
       await HttpClient.delete(`${API_URLS.activities}/${activity.id}`);
 
-      // afterSubmitForm?.({ name: "activity", success: true });
+      setModalEvent({
+        type: "resolve",
+        name: "activity",
+        payload: { action: "delete", id: activity.id },
+      });
     } catch (err: any) {
       showError(err?.message || "Không thể xóa hoạt động");
-    } finally {
     }
   };
   return (

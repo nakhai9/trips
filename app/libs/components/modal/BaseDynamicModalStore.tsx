@@ -14,26 +14,36 @@ export type BaseDynamicModalConfig = {
   onSuccess?: (success: boolean) => void;
 };
 
+type BaseDynamicModalEvent = {
+  type: "resolve" | "close";
+  name: string;
+  payload?: any;
+};
+
 type BaseDynamicModalState = {
   isOpen: boolean;
   content: ReactNode | null;
   config?: BaseDynamicModalConfig;
+  modalEvent?: BaseDynamicModalEvent | null;
+  resolveBdm?: (value: any) => void;
 
   //   functions
   openBdm: <T>(
     content: ReactNode,
     config?: BaseDynamicModalConfig,
-  ) => Promise<T>;
+  ) => Promise<T | null>;
   closeBdm: () => void;
-
+  resetBdm: () => void;
   updateFormData: (formData: any) => void;
+  setModalEvent: (event: BaseDynamicModalEvent | null) => void;
 };
 
 export const useBaseDynamicModal = create<BaseDynamicModalState>((set) => ({
   isOpen: false,
   content: null,
   config: {},
-  onSuccess: undefined,
+  modalEvent: null,
+  resolveBdm: undefined,
 
   openBdm: (content, config = {}) => {
     return new Promise((resolve) => {
@@ -43,18 +53,27 @@ export const useBaseDynamicModal = create<BaseDynamicModalState>((set) => ({
         config: {
           ...config,
         },
+        resolveBdm: resolve,
       });
     });
   },
 
   closeBdm: () =>
-    set({
-      isOpen: false,
+    set((state) => {
+      state.resolveBdm?.(null);
+      return {
+        isOpen: false,
+        content: null,
+        config: {},
+        resolveBdm: undefined,
+      };
     }),
 
   resetBdm: () => {
-    set({ content: null, config: {} });
+    set({ content: null, config: {}, modalEvent: null, resolveBdm: undefined });
   },
+
+  setModalEvent: (event) => set({ modalEvent: event }),
 
   updateFormData: (formData: any) => {
     set((state) => ({
