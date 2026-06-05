@@ -79,7 +79,6 @@ function useFetchItineraries() {
   const fetchItineraries = useCallback(async (tripID: string) => {
     try {
       setLoading(true);
-      setIsLoading(true);
       const res = await HttpClient.get<any>(
         `${API_URLS.itineraries}?planId=${tripID}`,
       );
@@ -88,7 +87,6 @@ function useFetchItineraries() {
       setError(err.message);
     } finally {
       setLoading(false);
-      setIsLoading(false);
     }
   }, []);
 
