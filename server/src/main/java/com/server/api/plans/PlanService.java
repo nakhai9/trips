@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.server.api.plans.dto.AccessCodeRequestDto;
 import com.server.api.plans.dto.CreatePlanResponseDto;
 import com.server.api.plans.dto.PlanRequestDto;
 import com.server.api.plans.dto.PlanResponseDto;
@@ -25,7 +26,7 @@ public class PlanService {
 
     public CreatePlanResponseDto create(PlanRequestDto request) {
 
-        User user =null;
+        User user = null;
 
         if(request.getUserId() != null) {
             user = userRepo.findById(request.getUserId()).orElse(null);
@@ -58,15 +59,23 @@ public class PlanService {
                 .collect(Collectors.toList());
     }
 
-    public PlanResponseDto get(UUID id, String accessCode) {
-        Plan plan = planRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy plan theo Id " + id));
-        boolean canView = plan.isPublic() || (plan.getAccessCode() != null && plan.getAccessCode().equals(accessCode));
+    public PlanResponseDto get(UUID id, AccessCodeRequestDto request) {
+        Plan plan = planRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy plan theo Id " + id));
 
-        if (!canView) {
-            throw new RuntimeException("Mã truy cập không hợp lệ");
+        String accessCode = request != null ? request.getAccessCode() : null;
+
+        // Plan public
+        if (accessCode == null) {
+            return mapToResponse(plan, plan.isPublic());
         }
 
-        return mapToResponse(plan, canView);
+        // Plan private
+        if (!accessCode.equals(plan.getAccessCode())) {
+            throw new RuntimeException("Access code mismatch");
+        }
+
+        return mapToResponse(plan, true);
     }
 
     public PlanResponseDto update(UUID id, PlanRequestDto request) {

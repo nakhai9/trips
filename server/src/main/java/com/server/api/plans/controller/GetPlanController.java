@@ -26,6 +26,6 @@ public class GetPlanController {
     @PostMapping("/{id}")
     public BaseApiResponse<PlanResponseDto> get(@PathVariable UUID id, @RequestBody(required = false) AccessCodeRequestDto request) {
 
-        return BaseApiResponse.success(planService.get(id,  request != null ? request.getAccessCode() : null));
+        return BaseApiResponse.success(planService.get(id, request));
     }
 }

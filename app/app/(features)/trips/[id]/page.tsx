@@ -47,6 +47,7 @@ function useFetchTrip() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { setIsLoading } = useGlobalStore();
+  const { showError, showSuccess } = useToast();
 
   const fetchTrip = useCallback(async (tripID: string, accessCode?: string) => {
     try {
@@ -56,8 +57,9 @@ function useFetchTrip() {
         accessCode,
       });
       setTrip(data);
+      return data;
     } catch (err: any) {
-      setError(err.message);
+      showError(err);
     } finally {
       setLoading(false);
       setIsLoading(false);
@@ -132,17 +134,24 @@ export default function TripDetailPage() {
   useEffect(() => {
     if (!tripID) return;
     genQRCode(tripID);
-    fetchTrip(tripID);
-    fetchItineraries(tripID);
+    try {
+      fetchTrip(tripID).then((data) => {
+        if (data?.canView) {
+          fetchItineraries(tripID);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }, [tripID]);
 
   const handleSubmitCode = async () => {
     try {
-      await Promise.all([
-        fetchTrip(tripID, accessCode),
-        fetchItineraries(tripID),
-      ]);
-      showSuccess("Mã truy cập hợp lệ");
+      const data = await fetchTrip(tripID, accessCode);
+      if (data?.canView) {
+        showSuccess("Mã truy cập hợp lệ");
+        await fetchItineraries(tripID);
+      }
     } catch (error) {
       showError("Mã truy cập không hợp lệ");
     }
