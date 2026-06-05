@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.server.api.plans.dto.AccessCodeRequestDto;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class PlanService {
     private final PlanRepository planRepository;
     private final UserRepository userRepo;
+    private final PasswordEncoder passwordEncoder;
 
     private static final String SUPER_GUEST_EMAIL = "superguest@lite.com";
 
@@ -37,10 +39,12 @@ public class PlanService {
             user = userRepo.findByEmail(SUPER_GUEST_EMAIL).orElseThrow(() -> new RuntimeException("Super Guest user not found"));
         }
 
+        String encodedAccessCode = passwordEncoder.encode(request.getAccessCode());
+
         Plan plan = Plan.builder()
                 .title(request.getTitle())
                 .isPublic(request.getIsPublic())
-                .accessCode(request.getIsPublic() ? null : request.getAccessCode())
+                .accessCode(request.getIsPublic() ? null : encodedAccessCode)
                 .user(user)
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
@@ -74,7 +78,9 @@ public class PlanService {
             return mapToResponse(plan, plan.getIsPublic());
         }
 
-        if (!accessCode.equals(plan.getAccessCode())) {
+        boolean isMatched = passwordEncoder.matches(accessCode, plan.getAccessCode());
+
+        if (!isMatched) {
             throw new RuntimeException("Access code mismatch");
         }
 

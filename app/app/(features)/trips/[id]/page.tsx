@@ -1,9 +1,11 @@
 "use client";
 
+import TripForm from "@/components/forms/TripForm";
 import RootLayout from "@/components/layout/RootLayout";
 import TripItineraryDaily from "@/components/TripItineraryDaily";
 import { API_URLS } from "@/libs/api/api.constant";
 import { HttpClient } from "@/libs/api/http";
+import { useBaseDynamicModal } from "@/libs/components/modal/BaseDynamicModalStore";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
 import { useGlobalStore } from "@/store/global-store";
 import { Itinerary, Trip } from "@/types/common";
@@ -97,6 +99,7 @@ export default function TripDetailPage() {
   const params = useParams();
   const tripID = params?.id as string;
   const router = useRouter();
+  const { openBdm } = useBaseDynamicModal();
   const { trip, fetchTrip } = useFetchTrip();
   const { itineraries, fetchItineraries } = useFetchItineraries();
   const { showError, showSuccess } = useToast();
@@ -132,13 +135,12 @@ export default function TripDetailPage() {
     } catch (error) {
       console.log(error);
     }
-  }, [tripID]);
+  }, [tripID, fetchTrip]);
 
   const handleSubmitCode = async () => {
     try {
       const data = await fetchTrip(tripID, accessCode);
       if (data?.canView) {
-        showSuccess("Mã truy cập hợp lệ");
         await fetchItineraries(tripID);
       }
     } catch (error) {
@@ -153,6 +155,13 @@ export default function TripDetailPage() {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(`${window.location.origin}/trips/${tripID}`);
     showSuccess("Đã sao chép đường dẫn");
+  };
+
+  const handleOpenSetting = async () => {
+    await openBdm(<TripForm />, {
+      title: "Chỉnh sửa kế hoạch",
+      formData: { id: tripID, reloadFn: () => fetchTrip(tripID) },
+    });
   };
 
   return (
@@ -219,7 +228,14 @@ export default function TripDetailPage() {
                           <Link size={16} />
                         </IconButton>
 
-                        <IconButton aria-label="more" sx={{ color: "#1a2530" }}>
+                        <IconButton
+                          aria-label="more"
+                          sx={{
+                            color: "#1a2530",
+                            display: trip.canView ? "block" : "none",
+                          }}
+                          onClick={handleOpenSetting}
+                        >
                           <Settings size={16} />
                         </IconButton>
                       </Stack>

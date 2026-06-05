@@ -124,7 +124,18 @@ export default function TripItineraryDaily({
       )}
 
       {itinerary?.activities && itinerary.activities.length > 0 && (
-        <Stack direction="column" mt={3}>
+        <Stack direction="column" mt={2} spacing={2}>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              color: "#334155",
+              maxWidth: 320,
+              lineHeight: 1.6,
+              fontWeight: 500,
+            }}
+          >
+            HOẠT ĐỘNG TRONG NGÀY
+          </Typography>
           {itinerary.activities?.map((act, index) => (
             <Box key={act.id || index}>
               <Box sx={{ border: "1px solid #334155", p: 1, borderRadius: 2 }}>

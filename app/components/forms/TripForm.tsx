@@ -5,12 +5,14 @@ import BaseInput from "@/libs/components/BaseInput";
 import { useBaseDynamicModal } from "@/libs/components/modal/BaseDynamicModalStore";
 import BaseModalBody from "@/libs/components/modal/BaseModalBody";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
+import { useGlobalStore } from "@/store/global-store";
 import { ResponseId } from "@/types/api";
+import { Trip } from "@/types/common";
 import { Box, Button, FormControlLabel, Stack, Switch } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TripsDateRangePicker, {
   TripsDateRangePickerProps,
 } from "../ui/TripsDateRangePicker";
@@ -31,11 +33,39 @@ type TripForm = {
 
 export type TripFormProps = {};
 
+function useFetchTrip() {
+  const [trip, setTrip] = useState<Trip | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { setIsLoading } = useGlobalStore();
+  const { showError, showSuccess } = useToast();
+
+  const fetchTrip = useCallback(async (tripID: string, accessCode?: string) => {
+    try {
+      setLoading(true);
+      setIsLoading(true);
+      const data = await HttpClient.post<Trip>(`${API_URLS.plan}/${tripID}`, {
+        accessCode,
+      });
+      setTrip(data);
+      return data;
+    } catch (err: any) {
+      showError(err);
+    } finally {
+      setLoading(false);
+      setIsLoading(false);
+    }
+  }, []);
+
+  return { trip, loading, error, fetchTrip };
+}
+
 export default function TripForm({}: TripFormProps) {
   const { config, closeBdm } = useBaseDynamicModal();
   const { showError, showSuccess } = useToast();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { fetchTrip, trip } = useFetchTrip();
   const [form, setForm] = useState<Partial<TripForm> | null>({
     title: "",
     startDate: dayjs().add(1, "day"),
@@ -66,32 +96,58 @@ export default function TripForm({}: TripFormProps) {
         return;
       }
 
-      console.log(form);
-
-      if (!form.isPublic && !form.accessCode?.trim()) {
+      if (!form.isPublic && !form.accessCode?.trim() && !config?.formData?.id) {
         showError("Mã truy cập là bắt buộc");
         return;
+      }
+
+      if (
+        !form.isPublic &&
+        (form.accessCode || "").trim().length < 8 &&
+        !config?.formData?.id
+      ) {
+        showError("Mã truy cập tối đa 8 kí tự");
       }
 
       closeBdm();
 
       setLoading(true);
 
-      const payload = {
+      let payload = {
         title: form.title,
         description: "form.description",
-        isPublic: form.accessCode ? false : true,
-        accessCode: form.accessCode,
+        isPublic: config?.formData?.id
+          ? form.isPublic
+          : form.accessCode
+            ? false
+            : true,
         startDate: dayjs(form.startDate).toISOString(),
         endDate: dayjs(form.endDate).toISOString(),
       };
 
-      const res = await HttpClient.post<ResponseId>(API_URLS.plan, payload);
+      if (config?.formData?.id) {
+        console.log(payload);
+        const res = await HttpClient.put<ResponseId>(
+          `${API_URLS.plan}/${config?.formData?.id}`,
+          payload,
+        );
 
-      if (res?.id) {
-        showSuccess("Tạo hành trình thành công");
-        router.push(`/trips/${res.id}`);
+        if (res?.id) {
+          showSuccess("Cập nhật thành công");
+        }
+      } else {
+        const res = await HttpClient.post<ResponseId>(API_URLS.plan, {
+          ...payload,
+          accessCode: form.accessCode,
+        });
+
+        if (res?.id) {
+          showSuccess("Tạo hành trình thành công");
+          router.push(`/trips/${res.id}`);
+        }
       }
+
+      config?.formData?.reloadFn?.();
     } catch (error: any) {
       showError(error?.message || "Có lỗi xảy ra");
     } finally {
@@ -126,11 +182,32 @@ export default function TripForm({}: TripFormProps) {
     });
   };
 
+  useEffect(() => {
+    if (!config?.formData?.id) return;
+    fetchTrip(config?.formData?.id);
+  }, [config?.formData?.id]);
+
+  useEffect(() => {
+    if (!trip) return;
+    if (trip) {
+      setForm({
+        ...form,
+        title: trip.title,
+        endDate: dayjs(trip.endDate),
+        startDate: dayjs(trip.startDate),
+        isPublic: trip.isPublic,
+        accessCode: trip.accessCode,
+      });
+    }
+  }, [trip]);
+
   return (
     <BaseModalBody
       actions={
         <>
-          <Button onClick={handleCancel}>Hủy</Button>
+          <Button size="small" onClick={handleCancel}>
+            Hủy
+          </Button>
           <Button
             variant="contained"
             size="small"
@@ -147,7 +224,7 @@ export default function TripForm({}: TripFormProps) {
               "&:hover": { background: "#c94e2d" },
             }}
             onClick={handleSave}
-            disabled={loading}
+            disabled={loading || !form?.title}
           >
             Lưu
           </Button>
@@ -211,10 +288,16 @@ export default function TripForm({}: TripFormProps) {
             label="Mã truy cập"
             value={form?.accessCode || ""}
             size="small"
+            disabled={config?.formData?.id}
             onChange={(e) =>
               updateTrip({
                 accessCode: e.target.value,
               })
+            }
+            helperText={
+              config?.formData?.id
+                ? "(*) Hiện tại chức năng đổi mã truy cập chưa khả dụng"
+                : "Mã truy cập tối đa 8 kí tự."
             }
           />
         </Stack>

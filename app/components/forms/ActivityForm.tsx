@@ -118,13 +118,11 @@ export default function ActivityForm({}: ActivityFormProps) {
 
   useEffect(() => {
     if (!config?.formData?.id) return;
-    console.log("Fetching activity with id:", config.formData.id);
     fetchActivity(config.formData.id);
   }, [config?.formData?.id]);
 
   useEffect(() => {
     if (!activity) return;
-    console.log("Fetched activity:", activity);
     setForm({ ...form, ...activity });
   }, [activity]);
 
