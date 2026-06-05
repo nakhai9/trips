@@ -20,16 +20,38 @@ export default function TripActivitySection({
   const handleDeleteActivity = async (activity: ItineraryActivity) => {
     try {
       await HttpClient.delete(`${API_URLS.activities}/${activity.id}`);
-
-      setModalEvent({
-        type: "resolve",
-        name: "activity",
-        payload: { action: "delete", id: activity.id },
-      });
     } catch (err: any) {
       showError(err?.message || "Không thể xóa hoạt động");
+    } finally {
+      resetEventModal();
     }
   };
+
+  const handleOpenActivityModal = async () => {
+    const formData = await openBdm(
+      <ActivityForm />,
+
+      {
+        title: "Hoạt động",
+        formData: {
+          itineraryId,
+        },
+        onSuccess: (success) => {
+          if (!success) return;
+          resetEventModal();
+        },
+      },
+    );
+  };
+
+  const resetEventModal = () => {
+    setModalEvent({
+      type: "resolve",
+      name: "activity",
+      payload: { action: "delete" },
+    });
+  };
+
   return (
     <>
       {activities.length > 0 && (
@@ -165,22 +187,7 @@ export default function TripActivitySection({
                 textTransform: "none",
                 "&:hover": { background: "#c94e2d" },
               }}
-              onClick={async () => {
-                const formData = await openBdm(
-                  <ActivityForm />,
-
-                  {
-                    title: "Hoạt động",
-                    formData: {
-                      itineraryId,
-                    },
-                    onSuccess: (success) => {
-                      if (!success) return;
-                      // afterSubmitForm?.({ name: "activity", success: true });
-                    },
-                  },
-                );
-              }}
+              onClick={handleOpenActivityModal}
             >
               <span>Thêm hoạt động</span>
             </Button>
@@ -188,7 +195,7 @@ export default function TripActivitySection({
         </Stack>
       )}
 
-      {activities && !activities.length && (
+      {activities.length <= 0 && (
         <Box
           sx={{
             backgroundColor: "",
@@ -220,22 +227,7 @@ export default function TripActivitySection({
 
           <Button
             size="small"
-            onClick={async () => {
-              const formData = await openBdm(
-                <ActivityForm />,
-
-                {
-                  title: "Hoạt động",
-                  formData: {
-                    itineraryId,
-                  },
-                  onSuccess: (success) => {
-                    if (!success) return;
-                    // afterSubmitForm?.({ name: "activity", success: true });
-                  },
-                },
-              );
-            }}
+            onClick={handleOpenActivityModal}
             sx={{
               borderColor: "#e35c35",
               color: "#e35c35",

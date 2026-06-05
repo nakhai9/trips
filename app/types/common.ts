@@ -79,7 +79,7 @@ export type Itinerary = {
   planId: string;
   destination?: string;
   destinations?: string;
-  description?: string;
+  description: string;
 
   activities?: ItineraryActivity[];
 } & ObjectId;

@@ -159,7 +159,10 @@ export default function TripDetailPage() {
   };
 
   useEffect(() => {
-    if (modalEvent?.type === "resolve" && modalEvent.name === "activity") {
+    if (
+      modalEvent?.type === "resolve" &&
+      (modalEvent.name === "activity" || modalEvent.name === "itinerary")
+    ) {
       fetchItineraries(tripID);
       setModalEvent(null);
     }

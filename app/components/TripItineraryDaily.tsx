@@ -31,8 +31,28 @@ export default function TripItineraryDaily({
   onDelete,
   afterSubmitForm,
 }: TripItineraryDailyProps) {
-  const { openBdm } = useBaseDynamicModal();
+  const { openBdm, setModalEvent } = useBaseDynamicModal();
 
+  const handleOpenDetailModal = async () => {
+    const form = await openBdm(<ItineraryForm />, {
+      title: "Kê hoạch ngày " + dayNumber,
+      formData: {
+        ...itinerary,
+      },
+    });
+  };
+
+  const handleOpenCreateModal = async () => {
+    await openBdm(<ItineraryForm />, {
+      title: "Kế hoạch ngày " + dayNumber,
+      // hideHeader: true,
+      formData: {
+        dayNumber: dayNumber,
+        ...itinerary,
+        planId: planId,
+      },
+    });
+  };
   return (
     <Box>
       {itinerary?.destinations && (
@@ -54,21 +74,7 @@ export default function TripItineraryDaily({
             >
               ĐỊA ĐIỂM CHÍNH TRONG NGÀY
             </Typography>
-            <IconButton
-              type="button"
-              onClick={async () => {
-                const form = await openBdm(<ItineraryForm />, {
-                  title: "Kê hoạch ngày " + dayNumber,
-                  formData: {
-                    ...itinerary,
-                  },
-                  onSuccess: (success) => {
-                    if (!success) return;
-                    afterSubmitForm?.({ name: "itinerary", success: true });
-                  },
-                });
-              }}
-            >
+            <IconButton type="button" onClick={handleOpenDetailModal}>
               <Pen size={14} />
             </IconButton>
           </Stack>
@@ -95,10 +101,12 @@ export default function TripItineraryDaily({
         </Box>
       )}
 
-      <TripActivitySection
-        activities={itinerary?.activities ?? []}
-        itineraryId={itinerary?.id ?? ""}
-      />
+      {(itinerary?.destinations?.split(",") || []).length > 0 && (
+        <TripActivitySection
+          activities={itinerary?.activities ?? []}
+          itineraryId={itinerary?.id ?? ""}
+        />
+      )}
 
       {!(itinerary?.destinations?.split(",") || []).length && (
         <Stack direction="column" justifyContent="center" alignItems="center">
@@ -123,17 +131,7 @@ export default function TripItineraryDaily({
           <Button
             type="button"
             size="small"
-            onClick={async () => {
-              openBdm(<ItineraryForm />, {
-                title: "Kế hoạch ngày " + dayNumber,
-                // hideHeader: true,
-                formData: {
-                  dayNumber: dayNumber,
-                  ...itinerary,
-                  planId: planId,
-                },
-              });
-            }}
+            onClick={handleOpenCreateModal}
             sx={{
               background: "#e35c35",
               color: "#fff",

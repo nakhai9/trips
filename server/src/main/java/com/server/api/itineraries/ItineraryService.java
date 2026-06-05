@@ -36,6 +36,7 @@ public class ItineraryService {
                 .plan(plan)
                 .destination((request.getDestination()))
                 .destinations(request.getDestinations())
+                .note(request.getNote())
                 .build();
         Itinerary savedItinerary = itineraryRepo.save(itinerary);
         return new ResponseId(savedItinerary.getId().toString());
@@ -60,6 +61,7 @@ public class ItineraryService {
                 .planId(itinerary.getPlan().getId())
                 .destination(itinerary.getDestination())
                 .destinations(itinerary.getDestinations())
+                .note(itinerary.getNote())
                 .activities(itinerary.getActivities().stream()
                         .sorted(Comparator.comparing(Activity::getCreatedAt))
                         .map(this::mapActivity)
@@ -103,7 +105,7 @@ public class ItineraryService {
             itinerary.setDestination(payload.getDestination());
         }
 
-         if (payload.getDestinations() != null) {
+        if (payload.getDestinations() != null) {
             itinerary.setDestinations(payload.getDestinations());
         }
 
@@ -113,6 +115,10 @@ public class ItineraryService {
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy plan"));
 
             itinerary.setPlan(plan);
+        }
+
+        if (payload.getNote() != null) {
+            itinerary.setNote(payload.getNote());
         }
 
         // Update Plan (nếu có)

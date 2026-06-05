@@ -48,6 +48,6 @@ public class Itinerary extends BaseEntity {
     @Column(name="destinations", nullable = false)
     private String destinations;
 
-    @Column(name="title", nullable = false)
-    private String title;
+    @Column(name="note", nullable = true)
+    private String note;
 }

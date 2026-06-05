@@ -40,7 +40,7 @@ function useFetchItinerary() {
 
 export default function ItineraryForm() {
   const { fetchItinerary, itinerary } = useFetchItinerary();
-  const { config } = useBaseDynamicModal();
+  const { config, setModalEvent } = useBaseDynamicModal();
   const { showError, showSuccess } = useToast();
   const { setIsLoading } = useGlobalStore();
   const { closeBdm } = useBaseDynamicModal();
@@ -88,7 +88,7 @@ export default function ItineraryForm() {
         }
       }
 
-      config?.onSuccess?.(true);
+      setModalEvent({ name: "itinerary", type: "resolve" });
 
       setIsLoading(false);
     } catch (error) {

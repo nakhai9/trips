@@ -23,4 +23,5 @@ public class ItineraryResponseDto {
     List<ActivityResponseDto> activities;
     private Boolean isCompleted;
     private String destinations;
+    private String note;
 }
