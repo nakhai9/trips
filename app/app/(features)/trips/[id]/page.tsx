@@ -46,14 +46,12 @@ const TripOpenStreetMapView = dynamic(
 function useFetchTrip() {
   const [trip, setTrip] = useState<Trip | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { setIsLoading } = useGlobalStore();
-  const { showError, showSuccess } = useToast();
+  const [error] = useState<string | null>(null);
+  const { showError } = useToast();
 
   const fetchTrip = useCallback(async (tripID: string, accessCode?: string) => {
     try {
       setLoading(true);
-      setIsLoading(true);
       const data = await HttpClient.post<Trip>(`${API_URLS.plan}/${tripID}`, {
         accessCode,
       });
@@ -63,7 +61,6 @@ function useFetchTrip() {
       showError(err);
     } finally {
       setLoading(false);
-      setIsLoading(false);
     }
   }, []);
 
