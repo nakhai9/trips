@@ -18,7 +18,7 @@ export default function Home() {
     >
       <Box
         sx={{
-          minHeight: { xs: "auto", md: "700px" },
+          minHeight: { xs: "auto", md: 400 },
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",

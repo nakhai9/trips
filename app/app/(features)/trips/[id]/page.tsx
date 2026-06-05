@@ -152,6 +152,7 @@ export default function TripDetailPage() {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(`${window.location.origin}/trips/${tripID}`);
+    showSuccess("Đã sao chép đường dẫn");
   };
 
   return (

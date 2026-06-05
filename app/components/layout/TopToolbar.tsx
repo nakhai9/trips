@@ -48,6 +48,9 @@ export default function TopToolbar({ background }: TopToolbarProps) {
             }}
           >
             <Stack direction="row" spacing={2}>
+              <Button type="button" onClick={() => router.push("/")}>
+                Trang chủ
+              </Button>
               <Button type="button" onClick={() => router.push("/trips")}>
                 Lịch trình
               </Button>
