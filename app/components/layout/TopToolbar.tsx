@@ -1,14 +1,18 @@
 "use client";
 import { LAYOUT_WIDTH_RESPONSIVE } from "@/app/providers";
 import { GithubIcon } from "@/libs/icons";
-import { Box, Button, Container, Stack } from "@mui/material";
+import { Box, Button, Container, Drawer, Stack } from "@mui/material";
+import { Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type TopToolbarProps = {
   background?: "ghost" | string;
 };
 export default function TopToolbar({ background }: TopToolbarProps) {
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+  const toggle = () => setIsOpen(!isOpen);
   return (
     <>
       <Box
@@ -47,7 +51,16 @@ export default function TopToolbar({ background }: TopToolbarProps) {
               borderBottom: background !== "ghost" ? "1px solid #ddd" : "unset",
             }}
           >
-            <Stack direction="row" spacing={2}>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                display: {
+                  xs: "none",
+                  md: "block",
+                },
+              }}
+            >
               <Button type="button" onClick={() => router.push("/")}>
                 Trang chủ
               </Button>
@@ -62,6 +75,19 @@ export default function TopToolbar({ background }: TopToolbarProps) {
                 Source & API
               </Button>
             </Stack>
+            <Box
+              component="div"
+              onClick={toggle}
+              sx={{
+                display: {
+                  xs: "block",
+                  md: "none",
+                },
+                color: background ? "#ffffff" : "#334155",
+              }}
+            >
+              <Menu />
+            </Box>
           </Box>
         </Container>
       </Box>
@@ -74,6 +100,40 @@ export default function TopToolbar({ background }: TopToolbarProps) {
           },
         }}
       ></Box>
+      <Drawer
+        open={isOpen}
+        anchor="right"
+        sx={{ width: "100%" }}
+        onClose={toggle}
+        className="drawer"
+      >
+        <Box
+          sx={{
+            width: 250,
+          }}
+        >
+          <Stack direction="column" spacing={1}>
+            <Button size="small" type="button" onClick={() => router.push("/")}>
+              Trang chủ
+            </Button>
+            <Button
+              size="small"
+              type="button"
+              onClick={() => router.push("/trips")}
+            >
+              Lịch trình
+            </Button>
+            <Button
+              type="button"
+              size="small"
+              startIcon={<GithubIcon />}
+              onClick={() => router.push("/source-and-api")}
+            >
+              Source & API
+            </Button>
+          </Stack>
+        </Box>
+      </Drawer>
     </>
   );
 }

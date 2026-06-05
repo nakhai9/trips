@@ -128,7 +128,7 @@ export default function Home() {
                 background: "#fff",
                 "&:hover": { borderColor: "#c94e2d", background: "#fbeee7" },
               }}
-              onClick={() => router.push("pin-and-share")}
+              onClick={() => router.push("/trips")}
             >
               Bắt đầu
             </Button>
