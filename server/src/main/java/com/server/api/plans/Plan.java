@@ -48,8 +48,12 @@ public class Plan extends BaseEntity {
     private String accessCode;
 
     @Builder.Default
+    @Column(name = "viewCount", nullable = false)
+    private Long viewCount = 0L;
+
+    @Builder.Default
     @Column(name="is_public", nullable = false)
-    private boolean isPublic = true;
+    private Boolean isPublic = true;
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

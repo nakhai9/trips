@@ -25,9 +25,9 @@ import {
   CalendarClock,
   ChevronLeft,
   ChevronRight,
+  Link,
   Lock,
   Settings,
-  Share2,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useParams, useRouter } from "next/navigation";
@@ -216,7 +216,7 @@ export default function TripDetailPage() {
                           sx={{ color: "#1a2530" }}
                           onClick={copyToClipboard}
                         >
-                          <Share2 size={16} />
+                          <Link size={16} />
                         </IconButton>
 
                         <IconButton aria-label="more" sx={{ color: "#1a2530" }}>

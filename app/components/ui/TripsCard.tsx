@@ -1,9 +1,17 @@
 "use client";
 import { useToast } from "@/libs/components/toast/BaseToastStore";
+import { IS_SYSTEM_MASTER } from "@/libs/config";
 import { useGlobalStore } from "@/store/global-store";
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { Eye, Link2, LockKeyhole, Moon, Sun } from "lucide-react";
+import {
+  CalendarClock,
+  Eye,
+  Link2,
+  LockKeyhole,
+  SquareArrowOutUpRight,
+  Trash2,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import QRCode from "qrcode";
 import { useState } from "react";
@@ -13,6 +21,8 @@ type TripCardProps = {
   isPublic?: boolean;
   startDate: Date;
   endDate?: Date;
+  viewCount?: number;
+  delFn?: () => void;
 };
 export default function TripsCard({
   id,
@@ -20,6 +30,8 @@ export default function TripsCard({
   isPublic = true,
   startDate,
   endDate,
+  viewCount,
+  delFn,
 }: TripCardProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -118,26 +130,23 @@ export default function TripsCard({
           </Box>
 
           <Stack
-            direction="row"
+            direction="column"
             spacing={1}
-            alignItems="center"
             sx={{
               color: "#334155",
               fontSize: 13,
             }}
           >
             <Stack direction="row" spacing={0.5} alignItems="center">
-              <Sun size={14} />
+              <CalendarClock size={14} />
               <Typography variant="caption">
-                {dayjs(endDate).diff(dayjs(startDate), "day")}
+                {dayjs(endDate).diff(dayjs(startDate), "day")}N{" "}
+                {dayjs(endDate).diff(dayjs(startDate), "day") - 1}Đ
               </Typography>
             </Stack>
-
             <Stack direction="row" spacing={0.5} alignItems="center">
-              <Moon size={14} />
-              <Typography variant="caption">
-                {dayjs(endDate).diff(dayjs(startDate), "day") - 1}
-              </Typography>
+              <Eye size={14} />
+              <Typography variant="caption">{viewCount}</Typography>
             </Stack>
           </Stack>
         </Box>
@@ -163,8 +172,13 @@ export default function TripsCard({
             type="button"
             onClick={() => router.push(`trips/${id}`)}
           >
-            <Eye size={18} />
+            <SquareArrowOutUpRight size={18} />
           </IconButton>
+          {IS_SYSTEM_MASTER && delFn && (
+            <IconButton size="small" type="button" onClick={delFn}>
+              <Trash2 size={18} />
+            </IconButton>
+          )}
         </Stack>
       </Box>
     </>

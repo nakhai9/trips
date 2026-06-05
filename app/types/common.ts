@@ -45,6 +45,7 @@ export type Trip = {
   accessCode?: string;
   userId?: string;
   canView?: boolean;
+  viewCount: number;
 };
 
 export type ItineraryNotUse = {

@@ -21,4 +21,5 @@ public class PlanResponseDto {
     private boolean canView;
     @JsonProperty("isPublic")
     private Boolean isPublic;
+    private Long viewCount;
 }

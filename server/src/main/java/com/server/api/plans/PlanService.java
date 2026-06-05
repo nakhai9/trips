@@ -14,6 +14,7 @@ import com.server.api.plans.dto.PlanResponseDto;
 import com.server.api.users.User;
 import com.server.api.users.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -59,21 +60,25 @@ public class PlanService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public PlanResponseDto get(UUID id, AccessCodeRequestDto request) {
         Plan plan = planRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy plan theo Id " + id));
-
+        
         String accessCode = request != null ? request.getAccessCode() : null;
 
-        // Plan public
         if (accessCode == null) {
-            return mapToResponse(plan, plan.isPublic());
+            if (plan.getIsPublic()) {
+                planRepository.incrementViewCount(id);
+            }
+            return mapToResponse(plan, plan.getIsPublic());
         }
 
-        // Plan private
         if (!accessCode.equals(plan.getAccessCode())) {
             throw new RuntimeException("Access code mismatch");
         }
+
+        planRepository.incrementViewCount(id);
 
         return mapToResponse(plan, true);
     }
@@ -85,7 +90,7 @@ public class PlanService {
         plan.setTitle(request.getTitle());
         plan.setStartDate(request.getStartDate());
         plan.setEndDate(request.getEndDate());
-        plan.setPublic(request.getIsPublic());
+        plan.setIsPublic(request.getIsPublic());
         plan.setAccessCode(request.getIsPublic() ? null : request.getAccessCode());
 
         Plan savedPlan = planRepository.save(plan);
@@ -99,7 +104,8 @@ public class PlanService {
                 .startDate(plan.getStartDate())
                 .endDate(plan.getEndDate())
                 // .accessCode(plan.getAccessCode())
-                .isPublic(plan.isPublic())
+                .isPublic(plan.getIsPublic())
+                .viewCount(plan.getViewCount())
                 .build();
     }
 
@@ -110,7 +116,8 @@ public class PlanService {
                 .startDate(plan.getStartDate())
                 .endDate(plan.getEndDate())
                 .canView(canView)
-                .isPublic(plan.isPublic())
+                .isPublic(plan.getIsPublic())
+                .viewCount(plan.getViewCount())
                 .build();
     }
 
