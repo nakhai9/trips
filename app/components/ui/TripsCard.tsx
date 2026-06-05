@@ -146,7 +146,7 @@ export default function TripsCard({
             </Stack>
             <Stack direction="row" spacing={0.5} alignItems="center">
               <Eye size={14} />
-              <Typography variant="caption">{viewCount}</Typography>
+              <Typography variant="caption">{viewCount} đã xem</Typography>
             </Stack>
           </Stack>
         </Box>
