@@ -14,7 +14,6 @@ import {
   Button,
   Grid,
   IconButton,
-  Paper,
   Skeleton,
   Stack,
   Tab,
@@ -166,23 +165,17 @@ export default function TripDetailPage() {
           <Grid
             size={{
               xs: 12,
-              md: 2,
+              md: 1,
             }}
           ></Grid>
           <Grid
             size={{
               xs: 12,
-              md: 8,
+              md: 10,
             }}
           >
             {trip && (
-              <Paper
-                elevation={1}
-                className="nak-detail-wrapper"
-                sx={{
-                  my: 4,
-                }}
-              >
+              <Box className="nak-detail-wrapper" sx={{}}>
                 <Stack direction="column" spacing={2}>
                   <Box className="trip-heading" sx={{ px: 2, py: 1 }}>
                     <Stack
@@ -503,13 +496,13 @@ export default function TripDetailPage() {
                     )}
                   </Box>
                 </Stack>
-              </Paper>
+              </Box>
             )}
           </Grid>
           <Grid
             size={{
               xs: 12,
-              md: 2,
+              md: 1,
             }}
           ></Grid>
         </Grid>
