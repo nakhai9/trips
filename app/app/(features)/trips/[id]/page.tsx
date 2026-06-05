@@ -40,7 +40,7 @@ const TripOpenStreetMapView = dynamic(
     ssr: false,
   },
 );
-// ================= FETCH HOOKS =================
+
 function useFetchTrip() {
   const [trip, setTrip] = useState<Trip | null>(null);
   const [loading, setLoading] = useState(false);
